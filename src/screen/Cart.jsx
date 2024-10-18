@@ -19,7 +19,33 @@ import RNPickerSelect from 'react-native-picker-select';
 
 // Main Cart Component
 const Cart = ({navigation, route}) => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState([
+    // {
+    //   id: 1,
+    //   name: 'Laptop',
+    //   price: 1000,
+    //   quantity: 1,
+    //   image:
+    //     'https://images.pexels.com/photos/17696654/pexels-photo-17696654/free-photo-of-rice-with-meat.jpeg?auto=compress&cs=tinysrgb&w=600', // Update this with the actual image path
+    // },
+    // {
+    //   id: 2,
+    //   name: 'Phone',
+    //   price: 500,
+    //   quantity: 2,
+    //   image:
+    //     'https://cdn.pixabay.com/photo/2022/03/02/12/42/paneer-7043099_640.jpg', // Update this with the actual image path
+    // },
+    // {
+    //   id: 3,
+    //   name: 'Headphones',
+    //   price: 150,
+    //   quantity: 1,
+    //   image:
+    //     'https://cdn.pixabay.com/photo/2018/12/04/16/49/tandoori-3856045_640.jpg', // Update this with the actual image path
+    // },
+  ]);
+
   const [quantity, setQuantity] = useState({});
   const [paymentMethod, setPaymentMethod] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -152,7 +178,7 @@ const Header = ({navigation}) => (
 // Delivery Info Component
 const DeliveryInfo = () => (
   <View style={styles.deliveryContainer}>
-    <Text>
+    <Text style={styles.delivery}>
       Delivery in <Text style={styles.boldText}>35-40 mins</Text>
     </Text>
   </View>
@@ -243,15 +269,14 @@ const AddMoreItem = ({text, icon, onPress}) => (
   </Pressable>
 );
 
-// Billing Details Component
 const BillingDetails = ({total}) => (
   <View style={styles.billingDetails}>
     <Text style={styles.billingTitle}>Billing Details</Text>
     <View style={styles.billingInfo}>
-      {renderBillingRow('Item Total', `₹${total}`)}
-      {renderBillingRow('Delivery Fee', '₹15.00')}
-      {renderBillingRow('Delivery Partner Fee', '₹75')}
-      {renderBillingRow('Total Payable', `₹${total + 90}`, true)}
+      {renderBillingRow('Item Total', `€${total}`, {color: '#000'})}
+      {renderBillingRow('Delivery Fee', '€15.00', {color: '#000'})}
+      {renderBillingRow('Delivery Partner Fee', '€75', {color: '#000'})}
+      {renderBillingRow('Total Payable', `€${total + 90}`, true)}
     </View>
   </View>
 );
@@ -272,102 +297,199 @@ const PaymentFooter = ({
   setPaymentMethod,
   handleClearCart,
   navigation,
-}) => (
-  <Pressable style={styles.footerContainer}>
-    <View>
-      <Text style={styles.paymentText}>Pay Using</Text>
-      <RNPickerSelect
-        onValueChange={setPaymentMethod}
-        items={paymentOptions}
-        placeholder={{label: 'Select a payment method...', value: ''}}
-        style={pickerSelectStyles}
-      />
-      <Text style={styles.codText}>
-        {paymentMethod || 'Select payment method'}
-      </Text>
-    </View>
-    <Pressable
-      onPress={() => {
-        handleClearCart();
-        navigation.navigate('ORDER');
-      }}
-      style={styles.payButton}>
+}) => {
+  // Handle Paypal Payment Navigation
+  const handlePaypalAccount = () => {
+    if (paymentMethod === 'paypal') {
+      navigation.navigate('PAYPAL');
+    } else {
+      Alert.alert('Error', 'Please select the payment method.');
+    }
+  };
+
+  return (
+    <Pressable style={styles.footerContainer}>
       <View>
-        <Text style={styles.payAmountText}>₹{total + 90}</Text>
-        <Text style={styles.payText}>Pay</Text>
+        <Text style={styles.paymentText}>Pay Using</Text>
+        <RNPickerSelect
+          onValueChange={setPaymentMethod}
+          items={paymentOptions}
+          placeholder={{label: 'Select a payment method...', value: ''}}
+          style={pickerSelectStyles}
+        />
+        <Text style={styles.codText}>
+          {paymentMethod || 'Select payment method'}
+        </Text>
       </View>
+
+      <Pressable style={styles.placeOrderButton} onPress={handlePaypalAccount}>
+        <Text style={styles.placeOrderText}>Place Order</Text>
+      </Pressable>
+      <Pressable style={styles.clearCartButton} onPress={handleClearCart}>
+        <Text style={styles.clearCartText}>Clear Cart</Text>
+      </Pressable>
     </Pressable>
-  </Pressable>
-);
+  );
+};
 
-// Styles for the Cart Component
+// Styles
 const styles = StyleSheet.create({
-  // Overall Container
-  container: {padding: 20},
-
-  // Header
-  header: {flexDirection: 'row', alignItems: 'center'},
-  headerText: {fontSize: 18, fontWeight: 'bold', marginLeft: 20},
-
-  // Delivery Info
-  deliveryContainer: {marginTop: 20, marginBottom: 10},
-  boldText: {fontWeight: 'bold'},
-
-  // Items Added
-  itemsAddedSection: {marginVertical: 20},
-  itemsAddedText: {fontSize: 18, fontWeight: 'bold'},
-  emptyCartContainer: {marginVertical: 30, alignItems: 'center'},
-  emptyCartText: {fontSize: 16, fontWeight: 'bold'},
-
-  // Cart Item
-  cartItemContainer: {marginVertical: 15},
-  cartItemRow: {flexDirection: 'row', justifyContent: 'space-between'},
-  itemName: {fontSize: 16, fontWeight: 'bold'},
-  itemImage: {width: 50, height: 50},
-  quantityControl: {flexDirection: 'row', alignItems: 'center'},
-  controlText: {fontSize: 20, paddingHorizontal: 10},
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  deliveryContainer: {
+    padding: 16,
+  },
+  delivery: {
+    fontSize: 16,
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  itemsAddedSection: {
+    padding: 16,
+  },
+  itemsAddedText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  emptyCartContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  emptyCartText: {
+    fontSize: 16,
+    color: '#999',
+  },
+  cartItemContainer: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+  },
+  cartItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  itemName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  itemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 5,
+  },
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
   },
-  priceText: {fontSize: 16, fontWeight: 'bold'},
-  quantityText: {fontSize: 14, color: '#555'},
-
-  // Add More Items Section
-  addMoreItemsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 15,
+  priceText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  addItemRow: {flexDirection: 'row', alignItems: 'center'},
-  addMoreText: {fontSize: 16, marginLeft: 10},
-
-  // Billing Details
-  billingDetails: {marginTop: 20},
-  billingTitle: {fontSize: 18, fontWeight: 'bold'},
-  billingInfo: {marginTop: 10},
-  billingRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5,
+  quantityText: {
+    fontSize: 14,
+    color: '#666',
   },
-  billingText: {fontSize: 16},
-
-  // Footer (Payment)
-  footerContainer: {
+  quantityControl: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
+    marginVertical: 10,
   },
-  paymentText: {fontSize: 16},
-  codText: {fontSize: 14, color: '#888', marginTop: 5},
-  payButton: {backgroundColor: '#d97b29', padding: 10, borderRadius: 5},
-  payAmountText: {fontSize: 16, color: '#fff'},
-  payText: {fontSize: 16, color: '#fff', fontWeight: 'bold'},
-
-  // Modal
+  controlText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  addMoreItemsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginVertical: 5,
+    elevation: 1,
+  },
+  addItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  addMoreText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  billingDetails: {
+    padding: 16,
+  },
+  billingTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  billingInfo: {
+    marginTop: 10,
+    color: '#000',
+  },
+  billingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  billingText: {
+    fontSize: 16,
+  },
+  footerContainer: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#eaeaea',
+  },
+  paymentText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  codText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#666',
+  },
+  placeOrderButton: {
+    backgroundColor: '#d97b29',
+    padding: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  placeOrderText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  clearCartButton: {
+    backgroundColor: '#ff4d4d',
+    padding: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  clearCartText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -377,56 +499,58 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '80%',
     backgroundColor: '#fff',
-    padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    padding: 20,
+    elevation: 5,
   },
-  modalTitle: {fontSize: 20, fontWeight: 'bold', marginBottom: 10},
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   input: {
-    width: '100%',
-    borderColor: '#ddd',
+    borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
-    marginVertical: 10,
-    textAlignVertical: 'top',
+    marginBottom: 20,
   },
   button: {
     backgroundColor: '#d97b29',
-    padding: 10,
+    padding: 12,
     borderRadius: 5,
-    marginVertical: 5,
-    width: '100%',
     alignItems: 'center',
   },
-  closeButton: {backgroundColor: '#ddd'},
-  buttonText: {color: '#fff', fontSize: 16},
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    backgroundColor: '#ff4d4d',
+    marginTop: 10,
+  },
 });
 
-// Styles for RNPickerSelect
+// Picker Styles
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
+    borderColor: '#ccc',
+    borderRadius: 5,
     color: 'black',
-    paddingRight: 30,
-    backgroundColor: '#fff',
     marginTop: 10,
   },
   inputAndroid: {
     fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    borderRadius: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
     color: 'black',
-    paddingRight: 30,
-    backgroundColor: '#fff',
     marginTop: 10,
   },
 });

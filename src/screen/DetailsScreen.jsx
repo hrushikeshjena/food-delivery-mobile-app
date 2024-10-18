@@ -58,7 +58,7 @@ const DetailsScreen = ({ navigation, route }) => {
               <Pressable onPress={handleFavorite} accessible accessibilityLabel="Toggle favorite">
                 <Icon
                   name={isFavorited ? 'favorite' : 'favorite-border'}
-                  color={color.secondary}
+                  color='red'
                   size={25}
                 />
               </Pressable>
@@ -124,26 +124,26 @@ const DetailsScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
   },
   header: {
-    height: 100,
-    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#D97B29',
-    justifyContent: 'center',
+    padding: 16,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginLeft: 10,
+    flex: 1,
+    fontSize: 20,
     color: '#fff',
+    textAlign: 'center',
   },
   content: {
-    padding: 20,
+    padding: 16,
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 250,
     borderRadius: 10,
   },
   details: {
@@ -155,36 +155,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemName: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
   },
-  detailsText: {
-    fontSize: 16,
-    marginVertical: 5,
-  },
   tagContainer: {
-    flexDirection: 'row',
-    marginVertical: 10,
+    marginVertical: 5,
   },
   tag: {
     backgroundColor: '#D97B29',
     color: '#fff',
     padding: 5,
     borderRadius: 5,
-    marginRight: 10,
     fontSize: 12,
   },
-  addToCartButton: {
-    backgroundColor: '#D97B29',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  addToCartText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  detailsText: {
+    marginVertical: 5,
     fontSize: 16,
+  },
+  quantityLabel: {
+    marginTop: 15,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -193,18 +184,24 @@ const styles = StyleSheet.create({
   },
   quantityButton: {
     backgroundColor: '#D97B29',
-    padding: 10,
     borderRadius: 5,
-    marginHorizontal: 5,
+    padding: 10,
+    marginHorizontal: 10,
   },
   quantityText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
-  quantityLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 15,
+  addToCartButton: {
+    backgroundColor: '#D97B29',
+    borderRadius: 5,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  addToCartText: {
+    color: '#fff',
+    fontSize: 18,
   },
 });
 

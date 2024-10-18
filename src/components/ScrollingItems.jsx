@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     marginTop: 6,
+    color: '#000',
     textAlign: 'center',
   },
   itemDescription: {

@@ -1,43 +1,56 @@
-import React, { useState } from 'react';
-import { View, Button, Alert } from 'react-native';
-import { WebView } from 'react-native-webview';
+import React, {useState} from 'react';
+import {View, Button, Alert} from 'react-native';
+import {WebView} from 'react-native-webview';
 import axios from 'axios';
 
 const PayPalCheckout = () => {
   const [approvalUrl, setApprovalUrl] = useState(null);
 
+  // Create a PayPal payment
   const createPayment = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/paypal/create?sum=10.00');
-      setApprovalUrl(response.data);
+      const response = await axios.post('http://10.0.2.2:8083/payment/create');
+      setApprovalUrl(response.data.approvalUrl);
     } catch (error) {
-      console.error(error);
+      console.error(
+        'Error creating payment:',
+        error.response?.data || error.message,
+      );
     }
   };
 
-  const onNavigationStateChange = (event) => {
+  // Handle navigation within the WebView
+  const onNavigationStateChange = async event => {
     if (event.url.includes('success')) {
       const urlParams = new URLSearchParams(event.url.split('?')[1]);
       const paymentId = urlParams.get('paymentId');
       const payerId = urlParams.get('PayerID');
 
-      axios.post('http://localhost:8080/api/paypal/execute', { paymentId, payerId })
-        .then(response => {
-          Alert.alert('Payment Status', response.data);
-        }).catch(error => {
-          console.error(error);
-        });
+      try {
+        const response = await axios.post(
+          'http://10.0.2.2:8083/payment/success',
+          {paymentId, payerId},
+        );
+        Alert.alert(
+          'Payment Status',
+          response.data.message || 'Payment successful',
+        );
+      } catch (error) {
+        console.error('Error confirming payment:', error);
+        Alert.alert('Payment Status', 'Payment failed. Please try again.');
+      }
     }
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       {!approvalUrl ? (
         <Button title="Pay with PayPal" onPress={createPayment} />
       ) : (
         <WebView
-          source={{ uri: approvalUrl }}
+          source={{uri: approvalUrl}}
           onNavigationStateChange={onNavigationStateChange}
+          startInLoadingState={true}
         />
       )}
     </View>

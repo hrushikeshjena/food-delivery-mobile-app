@@ -118,11 +118,10 @@ export default function HomeScreen() {
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <TextInput placeholder="Search" style={styles.searchInput} />
+        <TextInput placeholder="Search" placeholderTextColor="#c0c0c0" style={styles.searchInput} />
         <Ionicons name="search" size={24} color="#D97B29" />
       </View>
 
-      {/* Main Content: Carousel, Categories, Big Cards, and Scrolling Items */}
       <Carousel />
       <Category />
       <BigCard />
@@ -148,6 +147,7 @@ const styles = StyleSheet.create({
   addressTitle: {
     fontSize: 15,
     fontWeight: '500',
+    color:'#000',
   },
   addressText: {
     color: 'gray',
@@ -180,5 +180,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
+    color:'#AEB5BB',
   },
 });

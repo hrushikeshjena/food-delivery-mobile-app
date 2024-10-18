@@ -49,7 +49,7 @@ const MenuItem = ({item}) => {
       <Pressable style={styles.pressable} onPress={goToDetailPage}>
         <View style={styles.infoContainer}>
           <Text style={styles.itemName}>{item?.name}</Text>
-          <Text style={styles.itemPrice}>₹{item?.price}</Text>
+          <Text style={styles.itemPrice}>€{item?.price}</Text>
           {/* <Text style={styles.starContainer}>{renderStars(item.rating)}</Text> */}
           <Text style={styles.itemDescription}>
             {item?.description.length > 40

@@ -213,6 +213,7 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 18,
     marginLeft: 10,
+    color:'#AEB5BB',
   },
   logoutButton: {
     backgroundColor: '#d97b29',

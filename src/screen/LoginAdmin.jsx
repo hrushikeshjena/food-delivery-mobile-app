@@ -73,7 +73,7 @@ const LoginAdmin = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter your email address"
-            placeholderTextColor={color.secondary}
+            placeholderTextColor='#AEB5BB'
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
@@ -85,7 +85,7 @@ const LoginAdmin = () => {
           <TextInput
             style={styles.textInput}
             placeholder="Enter your password"
-            placeholderTextColor={color.secondary}
+            placeholderTextColor='#AEB5BB'
             secureTextEntry={secureEntry}
             value={password}
             onChangeText={setPassword}
@@ -157,8 +157,9 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     paddingLeft: 10,
-    color: color.textPrimary,
+    color: '#000',
     fontFamily: fonts.Light,
+
   },
   loginButtonWrapper: {
     backgroundColor: color.primary,

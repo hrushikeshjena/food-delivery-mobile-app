@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable no-alert */
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,12 +8,12 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([
-    {id: '1', item: 'Product A', price: '$10'},
-    {id: '2', item: 'Product B', price: '$15'},
+    { id: '1', item: 'Product A', price: '$10'},
+    { id: '2', item: 'Product B', price: '$15'},
   ]);
 
   const totalRevenue = orders
@@ -60,6 +61,13 @@ const AdminDashboard = () => {
           style={styles.actionButton}
           onPress={() => navigation.navigate('ADDITEMS')}>
           <Text style={styles.actionButtonText}>Add Items</Text>
+        </TouchableOpacity>
+
+        {/* Main Home Button */}
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate('MAINHOME')}>
+          <Text style={styles.actionButtonText}>User Home</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

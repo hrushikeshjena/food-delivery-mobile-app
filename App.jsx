@@ -21,6 +21,7 @@ import CombinedYourOrder from './src/screen/YourOrder';
 import LoginAdmin from './src/screen/LoginAdmin';
 import LoginUser from './src/screen/LoginUsers';
 import MenuItem from './src/components/MenuItem';
+import PayPalCheckout from './src/components/Paypal';
 
 function HomeScreen() {
   const Tab = createBottomTabNavigator();
@@ -41,9 +42,9 @@ function HomeScreen() {
         name="SEARCH"
         component={SearchScreen}
         options={{
-          title: 'Search',
+          title: 'Food',
           tabBarIcon: ({size, color}) => (
-            <Icon name="search" size={size} color="#D97B29" />
+            <Icon name="fast-food" size={size} color="#D97B29" />
           ),
         }}
       />
@@ -51,7 +52,7 @@ function HomeScreen() {
         name="CART"
         component={CartScreen}
         options={{
-          title: 'Cart',
+          title: 'Checkout',
           tabBarIcon: ({size, color}) => (
             <Icon name="cart" size={size} color="#D97B29" /> 
           ),
@@ -72,7 +73,7 @@ const App = () => {
         <Stack.Screen name="USER" component={LoginUser} />
         {/* LoginAdmin  LoginUser */}
         {/* <Stack.Screen name="SIGNUP" component={SignupScreen} /> */}
-        <Stack.Screen name="HOME" component={HomeScreen} />
+        <Stack.Screen name="MAINHOME" component={HomeScreen} />
         <Stack.Screen name="ADMINDASHBOARD" component={AdminDashboard} />
         <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
         <Stack.Screen name="CART" component={CartScreen} />
@@ -83,6 +84,7 @@ const App = () => {
         <Stack.Screen name="ORDERSTATUS" component={OrderStatus} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="YourOrder" component={CombinedYourOrder} />
+        <Stack.Screen name="PAYPAL" component={PayPalCheckout} />
       </Stack.Navigator>
     </NavigationContainer>
   );

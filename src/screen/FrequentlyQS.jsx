@@ -1,17 +1,3 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
-
-// const FrequentlyQS = () => {
-//   return (
-//     <View>
-//       <Text>FrequentlyQS</Text>
-//     </View>
-//   )
-// }
-
-// export default FrequentlyQS
-
-// const styles = StyleSheet.create({})
 
 // import React, {useState, useEffect} from 'react';
 // import {
@@ -77,7 +63,62 @@
 //           bestSeller: true,
 //           quantity: 1,
 //         },
-//         // Other items...
+//         {
+//           id: '103',
+//           name: 'Lamb Biryani',
+//           price: 18.99,
+//           description:
+//             'Fragrant basmati rice with tender lamb pieces, slow-cooked with spices',
+//           rating: 4.7,
+//           ratings: 32,
+//           image:
+//             'https://images.pexels.com/photos/17696654/pexels-photo-17696654/free-photo-of-rice-with-meat.jpeg?auto=compress&cs=tinysrgb&w=600',
+//           veg: false,
+//           bestSeller: true,
+//           quantity: 1,
+//         },
+//         {
+//           id: '104',
+//           name: 'Dal Makhani',
+//           price: 9.99,
+//           description:
+//             'Creamy black lentils simmered with butter and spices for a rich taste',
+//           rating: 4.5,
+//           ratings: 78,
+//           image:
+//             'https://images.pexels.com/photos/19834445/pexels-photo-19834445/free-photo-of-traditional-indian-dish-with-ingredients-on-table.jpeg?auto=compress&cs=tinysrgb&w=600',
+//           veg: true,
+//           bestSeller: false,
+//           quantity: 1,
+//         },
+//         {
+//           id: '105',
+//           name: 'Tandoori Roti',
+//           price: 2.99,
+//           description:
+//             'Whole wheat flatbread baked in a tandoor, served hot and crispy',
+//           rating: 4.3,
+//           ratings: 52,
+//           image:
+//             'https://images.pexels.com/photos/1117862/pexels-photo-1117862.jpeg?auto=compress&cs=tinysrgb&w=600',
+//           veg: true,
+//           bestSeller: false,
+//           quantity: 1,
+//         },
+//         {
+//           id: '106',
+//           name: 'Fish Fry',
+//           price: 14.99,
+//           description:
+//             'Crispy fried fish marinated with tangy spices and served with lemon wedges',
+//           rating: 4.6,
+//           ratings: 28,
+//           image:
+//             'https://images.pexels.com/photos/17628580/pexels-photo-17628580/free-photo-of-fried-shrimps-in-a-basket.jpeg?auto=compress&cs=tinysrgb&w=600',
+//           veg: false,
+//           bestSeller: false,
+//           quantity: 1,
+//         },
 //       ],
 //     },
 //   ];
@@ -117,7 +158,7 @@
 //     <View style={styles.card}>
 //       {item.image && <Image source={{uri: item.image}} style={styles.image} />}
 //       <Text style={styles.title}>{item.name}</Text>
-//       <Text style={styles.price}>₹{item.price}</Text>
+//       <Text style={styles.price}>€{item.price}</Text>
 //       <Text style={styles.description}>{item.description}</Text>
 //       <View style={styles.actionsContainer}>
 //         <TouchableOpacity
@@ -140,6 +181,7 @@
 //         <TextInput
 //           style={styles.searchBar}
 //           placeholder="Search items..."
+//           placeholderTextColor="gray"
 //           value={searchQuery}
 //           onChangeText={setSearchQuery}
 //         />

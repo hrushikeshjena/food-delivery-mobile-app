@@ -1,4 +1,3 @@
-
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {Pressable, StyleSheet, Text, View, Image} from 'react-native';
@@ -7,7 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const ItemsComponents = ({data}) => {
   return (
     <Pressable style={styles.container} onPress={() => console.log(data?.name)}>
-     <Image style={styles.image} source={{uri: data?.featured_image}} />
+      <Image style={styles.image} source={{uri: data?.featured_image}} />
 
       <View style={styles.contentContainer}>
         <View style={styles.textContainer}>
@@ -16,7 +15,7 @@ const ItemsComponents = ({data}) => {
 
           {/* Item Price */}
           <Text style={styles.price}>
-            {data?.price ? `₹ ${data.price}` : 'Price not available'}
+            {data?.price ? `€ ${data.price}` : 'Price not available'}
           </Text>
 
           {/* Item Category */}
@@ -45,7 +44,7 @@ const ItemsComponents = ({data}) => {
           color="#D97B29"
           style={styles.icon}
         />
-        <Text>
+        <Text style={styles.discount}>
           {data?.discount ? `Flat ${data.discount} Off` : 'Flat 20% Off'}
         </Text>
       </View>
@@ -71,6 +70,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
   },
+  category: {
+    color: 'gray',
+  },
+  discount: {
+    color: '#000',
+  },
   contentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -85,6 +90,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#000',
+  },
+
+  price: {
+    color: '#000',
   },
   description: {
     fontSize: 14,

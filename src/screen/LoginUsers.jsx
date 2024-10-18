@@ -29,7 +29,7 @@ const LoginUser = () => {
   };
 
   const handleHome = () => {
-    navigation.navigate('HOME');
+    navigation.navigate('MAINHOME');
   };
   // Function to send OTP
   const signInWithPhoneNumber = async phone => {
@@ -106,7 +106,7 @@ const LoginUser = () => {
             <TextInput
               style={styles.textInput}
               placeholder="Enter your phone number"
-              placeholderTextColor={color.secondary}
+              placeholderTextColor='#AEB5BB'
               keyboardType="phone-pad"
               value={phoneNumber}
               onChangeText={setPhoneNumber}
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     paddingLeft: 10,
-    color: color.textPrimary,
+    color: '#000',
     fontFamily: fonts.Light,
   },
   loginButtonWrapper: {

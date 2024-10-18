@@ -78,15 +78,13 @@ const BigCard = ({onDetailsPress}) => {
             <View style={styles.content}>
               <View style={styles.info}>
                 <Text style={styles.name}>{item.name}</Text>
-                {/* <View style={styles.timeContainer}>
-                  <Icon name="access-time" size={14} color="#666" />
-                  <Text style={styles.timeText}>{item.time} mins</Text>
-                </View> */}
+
                 <Text style={styles.type}>{item.type}</Text>
               </View>
               <TouchableOpacity
                 style={styles.detailsButton}
-                onPress={() => onDetailsPress(item.id)}>
+                // onPress={() => onDetailsPress(item.id)}
+                >
                 <Icon name="arrow-forward" size={20} color="#D97B29" />
               </TouchableOpacity>
             </View>
@@ -148,6 +146,7 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: 'bold',
     fontSize: 14,
+    color: '#000',
   },
   timeContainer: {
     flexDirection: 'row',
