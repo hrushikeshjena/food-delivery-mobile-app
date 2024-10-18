@@ -1,99 +1,45 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import ItemsComponents from './ItemsComponents';
-
-const recommended = [
-  {
-    id: 0,
-    name: 'Nandhana Place',
-    image: '../assets/close.jpg',
-    time: '35-40 mins',
-    type: 'Andhra',
-    rating: 4.5,
-    isFavorite: false,
-    distance: '2.5 km',
-    priceLevel: '$$',
-    description: 'Popular for authentic Andhra cuisine with spicy delicacies.',
-  },
-  {
-    id: 1,
-    name: 'Malgudi Days',
-    image: 'https://example.com/malgudi-days.jpg',
-    time: '25-30 mins',
-    type: 'South Indian',
-    rating: 4.7,
-    isFavorite: true,
-    distance: '1.8 km',
-    priceLevel: '$$',
-    description:
-      'A cozy spot serving traditional South Indian dishes with modern twists.',
-  },
-  {
-    id: 2,
-    name: 'Spice Junction',
-    image: 'https://example.com/spice-junction.jpg',
-    type: 'North Indian',
-    rating: 4.3,
-    isFavorite: false,
-    distance: '3.2 km',
-    priceLevel: '$$$',
-    description:
-      'Known for rich North Indian curries and an elegant dining experience.',
-  },
-  {
-    id: 3,
-    name: 'Spice Junction',
-    image: 'https://example.com/spice-junction.jpg',
-    type: 'North Indian',
-    rating: 4.3,
-    isFavorite: false,
-    distance: '3.2 km',
-    priceLevel: '$$$',
-    description:
-      'Known for rich North Indian curries and an elegant dining experience.',
-  },
-];
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const items = [
   {
     id: 0,
     name: 'Offers',
     description: 'Up to 50% off',
-    image: 'https://example.com/offers.jpg',
+    icon: 'offer',
   },
   {
     id: 1,
     name: 'New Arrivals',
-    description: 'Check out the latest additions',
-    image: 'https://example.com/new-arrivals.jpg',
+    description: 'Check out',
+    icon: 'new-box',
   },
   {
     id: 2,
     name: 'Best Sellers',
-    description: 'Top-rated products you’ll love',
-    image: 'https://example.com/best-sellers.jpg',
+    description: 'Top-rated',
+    icon: 'star-circle',
   },
   {
     id: 3,
     name: 'Seasonal Sale',
-    description: 'Special discounts for the season',
-    image: 'https://example.com/seasonal-sale.jpg',
+    description: 'Special Discounts',
+    icon: 'sale',
   },
 ];
 
 const itemDatas = [
   {
     id: 0,
-    featured_image: 'https://example.com/featured-image.jpg',
+    name: 'Delicious Burrito',
+    price: 9.99,
+    category: 'Mexican',
+    customerRating: 4.5,
+    featured_image:
+      'https://cdn.pixabay.com/photo/2017/06/29/20/09/mexican-2456038_960_720.jpg',
     images: [
       {
         id: 0,
@@ -107,34 +53,54 @@ const itemDatas = [
       },
     ],
   },
+  {
+    id: 1,
+    name: 'Tasty Pizza',
+    price: 12.99,
+    category: 'Italian',
+    customerRating: 4.8,
+    featured_image:
+      'https://cdn.pixabay.com/photo/2020/05/17/04/22/pizza-5179939_640.jpg',
+    images: [
+      {
+        id: 0,
+        image: 'https://example.com/pizza1.jpg',
+        description: 'Cheese Pizza',
+      },
+      {
+        id: 1,
+        image: 'https://example.com/pizza2.jpg',
+        description: 'Pepperoni Pizza',
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Spicy Ramen',
+    price: 8.99,
+    category: 'Japanese',
+    customerRating: 4.7,
+    featured_image:
+      'https://cdn.pixabay.com/photo/2022/06/02/18/22/ramen-7238668_640.jpg',
+    images: [
+      {
+        id: 0,
+        image: 'https://example.com/ramen1.jpg',
+        description: 'Miso Ramen',
+      },
+      {
+        id: 1,
+        image: 'https://example.com/ramen2.jpg',
+        description: 'Spicy Tonkotsu Ramen',
+      },
+    ],
+  },
 ];
-
-// const cart = useSelector(state => state.cart.cart);
-// console.log(cart);
 
 const ScrollingItem = () => {
   return (
     <>
       <ScrollView style={styles.container}>
-        {/* <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.scrollContainer}>
-        {recommended?.map(item => (
-          <View key={item.id} style={styles.card}>
-            <Image style={styles.image} source={{uri: item.image}} />
-            <View style={styles.info}>
-              <Text style={styles.name}>{item.name}</Text>
-              <View style={styles.timeContainer}>
-                <Icon name="access-time" size={16} color="#666" />
-                <Text style={styles.timeText}>{item.time} mins</Text>
-              </View>
-              <Text style={styles.type}>{item.type}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView> */}
-
         <Text
           style={{
             textAlign: 'center',
@@ -145,7 +111,7 @@ const ScrollingItem = () => {
           }}>
           Explore
         </Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+        {/* <ScrollView horizontal showsHorizontalScrollIndicator={true}>
           {items?.map((item, index) => (
             <View
               key={index}
@@ -174,8 +140,25 @@ const ScrollingItem = () => {
               </Text>
             </View>
           ))}
-        </ScrollView>
+        </ScrollView> */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+          {items?.map((item, index) => (
+            <View key={index} style={styles.itemContainer}>
+              {/* Displaying Icon instead of Image */}
+              <MaterialCommunityIcons
+                name={item.icon}
+                size={50}
+                color="#D97B29"
+              />
 
+              {/* Item Name */}
+              <Text style={styles.itemName}>{item.name}</Text>
+
+              {/* Item Description */}
+              <Text style={styles.itemDescription}>{item.description}</Text>
+            </View>
+          ))}
+        </ScrollView>
         <Text
           style={{
             textAlign: 'center',
@@ -192,7 +175,7 @@ const ScrollingItem = () => {
           ))}
         </View>
       </ScrollView>
-        </>
+    </>
   );
 };
 
@@ -243,6 +226,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 5,
+  },
+  itemContainer: {
+    width: 90,
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
+    paddingVertical: 5,
+    paddingHorizontal: 1,
+    borderRadius: 5,
+    marginLeft: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  itemName: {
+    fontSize: 13,
+    fontWeight: '500',
+    marginTop: 6,
+    textAlign: 'center',
+  },
+  itemDescription: {
+    fontSize: 12,
+    color: 'gray',
+    marginTop: 3,
+    textAlign: 'center',
   },
 });
 

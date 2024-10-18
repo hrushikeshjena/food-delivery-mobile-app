@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "689711841909",
+    "project_id": "mobileapp-26533",
+    "storage_bucket": "mobileapp-26533.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689711841909:android:33166e95f553b518946e3c",
+        "android_client_info": {
+          "package_name": "com.apnadesikitchen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAucnLc_Y5uUX9AMaVjDS3KcCQO9_drQ8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

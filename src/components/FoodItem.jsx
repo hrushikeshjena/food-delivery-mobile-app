@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,17 +11,14 @@ const FoodItem = ({item}) => {
     <View>
       {data?.map(item => (
         <Pressable
-          key={item.id} // Use a unique key if available
+          key={item.id}
           style={{
             margin: 10,
-            // flexDirection: 'row',
-            // alignItems: 'center',
             justifyContent: 'space-between',
           }}>
           <Text style={styles.text}>
             {item?.name} ({item?.items?.length})
           </Text>
-          {/* <Ionicons name="chevron-down" size={20} color="#000" /> */}
           {item?.items?.map(subItem => (
             <MenuItem key={subItem.id} item={subItem} /> // Unique key for MenuItem
           ))}

@@ -1,276 +1,94 @@
-// import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-// import React, {useState} from 'react';
-// import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-// const MenuItem = ({item}) => {
-//   const [addItems, setAddItems] = useState(0);
-//   const [selected, setSelected] = useState(false);
-//   return (
-//     <View>
-//       <Pressable
-//         // eslint-disable-next-line react-native/no-inline-styles
-//         style={{
-//           margin: 10,
-//           flexDirection: 'row',
-//           justifyContent: 'space-between',
-//           marginVertical: 15,
-//         }}>
-//         <View>
-//           <Text style={{fontSize: 18, fontWeight: '600', width: 220}}>
-//             {item?.name}
-//           </Text>
-//           <Text style={{fontSize: 15, marginTop: 4, fontWeight: '500'}}>
-//             ₹{item?.price}
-//           </Text>
-//           {/* <Text style={{marginTop: 5, borderRadius: 4}}>
-//             {[0, 0, 0, 0, 0].map((_, i) => (
-//               <FontAwesome
-//                 key={i}
-//                 style={{paddingHorizontal: 3}}
-//                 name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
-//                 size={15}
-//                 color="#ffd700"
-//               />
-//             ))}
-//           </Text> */}
-//           <Text style={{marginTop: 5, borderRadius: 4}}>
-//             {Array(5)
-//               .fill(0)
-//               .map((_, i) => (
-//                 <FontAwesome
-//                   key={i}
-//                   style={{paddingHorizontal: 3}}
-//                   name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
-//                   size={15}
-//                   color="#ffd700"
-//                 />
-//               ))}
-//           </Text>
-
-//           <Text style={{width: 200, marginTop: 8, color: 'gray', fontSize: 16}}>
-//             {item?.description.length > 40
-//               ? item?.description.slice(0, 40) + '...'
-//               : item?.description}
-//           </Text>
-//         </View>
-//         <View>
-//           <Pressable>
-//             <Image
-//               style={{width: 120, height: 120, borderRadius: 8}}
-//               source={{uri: item?.image}}
-//             />
-//             {selected ? (
-//               <View style={styles.quantityControl}>
-//                 <Pressable
-//                   onPress={() => {
-//                     if (addItems === 1) {
-//                       setAddItems(0);
-//                       setSelected(false);
-//                     } else {
-//                       setAddItems(prevCount => prevCount - 1);
-//                     }
-//                   }}>
-//                   <Text style={styles.controlText}>-</Text>
-//                 </Pressable>
-
-//                 <Text style={styles.quantityText}>{addItems}</Text>
-
-//                 <Pressable
-//                   onPress={() => {
-//                     setAddItems(prevCount => prevCount + 1);
-//                   }}>
-//                   <Text style={styles.controlText}>+</Text>
-//                 </Pressable>
-//               </View>
-//             ) : (
-//               <Pressable
-//                 onPress={() => {
-//                   setSelected(true);
-//                   if (addItems === 0) {
-//                     setAddItems(prevCount => prevCount + 1);
-//                   }
-//                 }}
-//                 style={styles.addToCartButton}>
-//                 <Text style={styles.controlText}>Add</Text>
-//               </Pressable>
-//             )}
-//           </Pressable>
-//         </View>
-//       </Pressable>
-//     </View>
-//   );
-// };
-
-// export default MenuItem;
-
-// const styles = StyleSheet.create({
-//   quantityControl: {
-//     position: 'absolute',
-//     top: 95,
-//     left: 20,
-//     borderColor: '#e32636',
-//     borderWidth: 1,
-//     flexDirection: 'row',
-//     paddingHorizontal: 10,
-//     paddingVertical: 5,
-//     alignItems: 'center',
-//     backgroundColor: 'white',
-//     borderRadius: 5,
-//   },
-//   addToCartButton: {
-//     position: 'absolute',
-//     top: 95,
-//     left: 20,
-//     borderColor: '#e32636',
-//     borderWidth: 1,
-//     paddingHorizontal: 25,
-//     paddingVertical: 5,
-//     backgroundColor: 'white',
-//     borderRadius: 5,
-//   },
-//   controlText: {
-//     fontSize: 18,
-//     fontWeight: '600',
-//     color: '#fd5c63',
-//   },
-//   quantityText: {
-//     marginHorizontal: 10,
-//     fontSize: 16,
-//     fontWeight: '600',
-//   },
-// });
-
-
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const MenuItem = ({item}) => {
   const navigation = useNavigation();
-
   const [addItems, setAddItems] = useState(0);
   const [selected, setSelected] = useState(false);
 
+  const handleCart = () => navigation.navigate('CART', {item});
+  const goToDetailPage = () => navigation.navigate('DetailsScreen', {item});
 
-  const handleCart =()=>{
-    navigation.navigate('CART')
-  }
+  // const renderStars = rating =>
+  //   Array(5)
+  //     .fill(0)
+  //     .map((_, i) => (
+  //       <FontAwesome
+  //         key={i}
+  //         style={styles.star}
+  //         name={i < Math.floor(rating) ? 'star' : 'star-o'}
+  //         size={15}
+  //         color="#ffd700"
+  //       />
+  //     ));
+
+  const addItemToCart = () => {
+    setSelected(true);
+    setAddItems(prevCount => prevCount + 1);
+  };
+
+  const removeItemFromCart = () => {
+    if (addItems === 1) {
+      setSelected(false);
+    }
+    setAddItems(prevCount => Math.max(prevCount - 1, 0));
+  };
 
   return (
-    <View>
-      <Pressable
-        style={{
-          margin: 10,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginVertical: 15,
-        }}>
-        <View>
-          <Text style={{fontSize: 18, fontWeight: '600', width: 220}}>
-            {item?.name}
-          </Text>
-          <Text style={{fontSize: 15, marginTop: 4, fontWeight: '500'}}>
-            ₹{item?.price}
-          </Text>
-
-          {/* Display star rating */}
-          <Text style={{marginTop: 5, borderRadius: 4}}>
-            {Array(5)
-              .fill(0)
-              .map((_, i) => (
-                <FontAwesome
-                  key={i}
-                  style={{paddingHorizontal: 3}}
-                  name={i < Math.floor(item.rating) ? 'star' : 'star-o'}
-                  size={15}
-                  color="#ffd700"
-                />
-              ))}
-          </Text>
-
-          {/* Item description */}
-          <Text style={{width: 200, marginTop: 8, color: 'gray', fontSize: 16}}>
+    <View style={styles.container}>
+      <Pressable style={styles.pressable} onPress={goToDetailPage}>
+        <View style={styles.infoContainer}>
+          <Text style={styles.itemName}>{item?.name}</Text>
+          <Text style={styles.itemPrice}>₹{item?.price}</Text>
+          {/* <Text style={styles.starContainer}>{renderStars(item.rating)}</Text> */}
+          <Text style={styles.itemDescription}>
             {item?.description.length > 40
-              ? item?.description.slice(0, 40) + '...'
+              ? `${item?.description.slice(0, 40)}...`
               : item?.description}
           </Text>
+
+
+          <TouchableOpacity
+            onPress={goToDetailPage}
+            style={styles.iconContainer}>
+            <Icon name="arrow-redo-circle-outline" size={25} color="#D97B29" />
+          </TouchableOpacity>
         </View>
-
-        {/* Image and Add to Cart section */}
         <View>
-          <Pressable>
-            <Image
-              style={{width: 120, height: 120, borderRadius: 8}}
-              source={{uri: item?.image}}
-            />
-            {selected ? (
-              <View style={styles.quantityControl}>
-                <Pressable
-                  onPress={() => {
-                    if (addItems === 1) {
-                      setAddItems(0);
-                      setSelected(false);
-                    } else {
-                      setAddItems(prevCount => prevCount - 1);
-                    }
-                  }}>
-                  <Text style={styles.controlText}>-</Text>
-                </Pressable>
-
-                <Text style={styles.quantityText}>{addItems}</Text>
-
-                <Pressable
-                  onPress={() => {
-                    setAddItems(prevCount => prevCount + 1);
-                  }}>
-                  <Text style={styles.controlText}>+</Text>
-                </Pressable>
-              </View>
-            ) : (
-              <Pressable
-                onPress={() => {
-                  setSelected(true);
-                  if (addItems === 0) {
-                    setAddItems(prevCount => prevCount + 1);
-                  }
-                }}
-                style={styles.addToCartButton}>
-                <Text style={styles.controlText}>Add</Text>
+          <Image style={styles.itemImage} source={{uri: item?.image}} />
+          {selected ? (
+            <View style={styles.quantityControl}>
+              <Pressable onPress={removeItemFromCart}>
+                <Text style={styles.controlText}>-</Text>
               </Pressable>
-            )}
-          </Pressable>
+              <Text style={styles.quantityText}>{addItems}</Text>
+              <Pressable onPress={addItemToCart}>
+                <Text style={styles.controlText}>+</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <Pressable onPress={addItemToCart} style={styles.addToCartButton}>
+              <Text style={styles.controlText}>Add</Text>
+            </Pressable>
+          )}
         </View>
       </Pressable>
-
-      {/* Add to cart message based on addItems */}
       {addItems > 0 && (
-        <Pressable
-            onPress={handleCart}
-          style={{
-            backgroundColor: '#fd5c63',
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: 10,
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: 'white',
-              fontSize: 15,
-              fontWeight: '500',
-            }}>
+        <Pressable onPress={handleCart} style={styles.cartMessage}>
+          <Text style={styles.cartText}>
             {addItems} item{addItems > 1 ? 's' : ''} added
           </Text>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: 'white',
-              marginTop: 5,
-              fontWeight: '600',
-            }}>
+          <Text style={styles.cartInfo}>
             Add item(s) worth ₹240 to reduce surge fee by ₹35.
           </Text>
         </Pressable>
@@ -282,11 +100,55 @@ const MenuItem = ({item}) => {
 export default MenuItem;
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 5,
+    marginBottom: 20,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 2,
+  },
+  pressable: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  infoContainer: {
+    flex: 1,
+    marginRight: 10,
+  },
+  itemName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
+  itemPrice: {
+    fontSize: 15,
+    marginTop: 4,
+    fontWeight: '500',
+    color: '#D97B29',
+  },
+  starContainer: {
+    marginTop: 5,
+  },
+  star: {
+    paddingHorizontal: 3,
+  },
+  itemDescription: {
+    marginTop: 8,
+    color: 'gray',
+    fontSize: 16,
+  },
+  itemImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 8,
+  },
   quantityControl: {
     position: 'absolute',
     top: 95,
     left: 20,
-    borderColor: '#e32636',
+    borderColor: '#D97B29',
     borderWidth: 1,
     flexDirection: 'row',
     paddingHorizontal: 10,
@@ -299,7 +161,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 95,
     left: 20,
-    borderColor: '#e32636',
+    borderColor: '#D97B29',
     borderWidth: 1,
     paddingHorizontal: 25,
     paddingVertical: 5,
@@ -309,11 +171,39 @@ const styles = StyleSheet.create({
   controlText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#fd5c63',
+    color: '#D97B29',
   },
   quantityText: {
     marginHorizontal: 10,
     fontSize: 16,
     fontWeight: '600',
   },
+  cartMessage: {
+    backgroundColor: '#D97B29',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    borderRadius: 5,
+  },
+  cartText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  cartInfo: {
+    textAlign: 'center',
+    color: 'white',
+    marginTop: 5,
+    fontWeight: '600',
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 10,
+    padding: 5,
+  },
 });
+

@@ -3,16 +3,13 @@ import {
   StyleSheet,
   View,
   Text,
-  ActivityIndicator,
   Alert,
   PermissionsAndroid,
   Platform,
   ScrollView,
   Pressable,
   TextInput,
-  Image,
 } from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,6 +17,7 @@ import Carousel from '../components/Carousel';
 import Category from '../components/Category';
 import BigCard from '../components/BigCard';
 import ScrollingItem from '../components/ScrollingItems';
+import {useNavigation} from '@react-navigation/native';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD0lwp2aClBzdv3kE_xqIHUGxjcwjQXxSk';
 
@@ -31,13 +29,16 @@ export default function HomeScreen() {
     'Fetching your location...',
   );
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       requestLocationPermission();
     }
-    GetCurrentLocation();
+    getCurrentLocation();
   }, []);
 
+  // Request Location Permission for Android devices
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -60,11 +61,12 @@ export default function HomeScreen() {
           );
         }
       } catch (err) {
-        console.warn(err);
+        console.warn('Permission Error: ', err);
       }
     }
   };
 
+  // Fetch the Address from Latitude and Longitude
   const getAddressFromCoordinates = async (latitude, longitude) => {
     setLoading(true);
     try {
@@ -76,63 +78,53 @@ export default function HomeScreen() {
       setAddress(formattedAddress);
     } catch (error) {
       setAddress('Error fetching address');
+      console.error('Error fetching address: ', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleMapPress = event => {
-    const {latitude, longitude} = event.nativeEvent.coordinate;
-    setMarker({latitude, longitude});
-    getAddressFromCoordinates(latitude, longitude);
-  };
-
-  const GetCurrentLocation = () => {
+  // Get Current Location using Geolocation
+  const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
         const {latitude, longitude} = position.coords;
         setMarker({latitude, longitude});
         getAddressFromCoordinates(latitude, longitude);
-
-        axios
-          .get(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`,
-          )
-          .then(response => {
-            if (response.data.results.length > 0) {
-              const {formatted_address} = response.data.results[0];
-              setDisplayCurrentAddress(formatted_address);
-            } else {
-              setDisplayCurrentAddress('No address found');
-            }
-          })
-          .catch(() => setDisplayCurrentAddress('Error fetching address'));
       },
       error => Alert.alert('Error', error.message),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   };
 
+  // Navigate to Profile Screen
+  const openProfile = () => {
+    navigation.navigate('PROFILE');
+  };
+
   return (
     <ScrollView style={styles.container}>
+      {/* Header with Location Display */}
       <View style={styles.header}>
         <Ionicons name="location-outline" size={24} color="#D97B29" />
         <View style={styles.addressContainer}>
           <Text style={styles.addressTitle}>Deliver To</Text>
           <Text style={styles.addressText}>{displayCurrentAddress}</Text>
         </View>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.button} onPress={openProfile}>
           <Text style={styles.buttonText}>H</Text>
         </Pressable>
       </View>
 
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput placeholder="Search" style={styles.searchInput} />
         <Ionicons name="search" size={24} color="#D97B29" />
       </View>
+
+      {/* Main Content: Carousel, Categories, Big Cards, and Scrolling Items */}
       <Carousel />
       <Category />
-
       <BigCard />
       <ScrollingItem />
     </ScrollView>
@@ -163,7 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   button: {
-    backgroundColor: '#6cb4ee',
+    backgroundColor: '#d97b29',
     width: 40,
     height: 40,
     borderRadius: 20,

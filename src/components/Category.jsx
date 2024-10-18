@@ -3,12 +3,9 @@ import React from 'react';
 
 const Category = () => {
   const items = [
-    {id: '1', name: 'fastest delivery'},
-    {id: '2', name: 'rating 4.0+'},
-    {id: '3', name: 'offers'},
-    {id: '4', name: 'lorem'},
-    {id: '5', name: 'lorem'},
-    {id: '6', name: 'lorem'},
+    {id: '1', name: 'Fastest Delivery'},
+    {id: '2', name: 'Rating 4.0+'},
+    {id: '3', name: 'Offers'},
   ];
 
   return (
@@ -36,9 +33,10 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 5,
     padding: 10,
+    alignItems: 'center',
   },
   button: {
-    marginRight: 10, // Space between items
+    marginRight: 20, // Space between items
   },
   categoryItem: {
     padding: 10,

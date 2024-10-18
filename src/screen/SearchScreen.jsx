@@ -8,9 +8,14 @@ import {
   Image,
   ScrollView,
   TextInput,
+  Pressable,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import FoodItem from '../components/FoodItem';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const SearchScreen = () => {
   const [vegItems, setVegItems] = useState([]);
@@ -18,178 +23,156 @@ const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredVegItems, setFilteredVegItems] = useState([]);
   const [filteredNonVegItems, setFilteredNonVegItems] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [items, setItems] = useState([]);
 
-  const menu = [
-    {
-      id: '20',
-      name: 'Recommended',
-      items: [
-        {
-          id: '101',
-          name: 'Chicken Tikka',
-          price: 15.99,
-          description:
-            'This is served with Raita and gravy and has loaded with chill paste mixed chicken kebabs',
-          rating: 5,
-          ratings: 43,
-          image:
-            'https://cdn.pixabay.com/photo/2014/11/05/15/57/salmon-518032_960_720.jpg',
-          veg: false,
-          bestSeller: false,
-          quantity: 1,
-        },
-        {
-          id: '102',
-          name: 'Paneer Butter Masala',
-          price: 12.99,
-          description:
-            'A rich and creamy dish made with tender paneer cubes in a smooth tomato-based sauce',
-          rating: 4.8,
-          ratings: 56,
-          image:
-            'https://cdn.pixabay.com/photo/2014/11/05/15/57/salmon-518032_960_720.jpg',
-          veg: true,
-          bestSeller: true,
-          quantity: 1,
-        },
-        {
-          id: '103',
-          name: 'Lamb Rogan Josh',
-          price: 18.99,
-          description:
-            'A traditional Kashmiri dish with tender lamb cooked in aromatic spices and yogurt',
-          rating: 4.6,
-          ratings: 32,
-          image:
-            'https://cdn.pixabay.com/photo/2014/11/05/15/57/salmon-518032_960_720.jpg',
-          veg: false,
-          bestSeller: false,
-          quantity: 1,
-        },
-        {
-          id: '104',
-          name: 'Vegetable Biryani',
-          price: 10.99,
-          description:
-            'A fragrant rice dish cooked with mixed vegetables and flavorful spices',
-          rating: 4.9,
-          ratings: 78,
-          image:
-            'https://cdn.pixabay.com/photo/2014/11/05/15/57/salmon-518032_960_720.jpg',
-          veg: true,
-          bestSeller: true,
-          quantity: 1,
-        },
-      ],
-    },
-  ];
+  const navigation = useNavigation();
+  const [addItems, setAddItems] = useState(0);
+  const [selected, setSelected] = useState(false);
 
+  const handleCart = () => navigation.navigate('CART', {items});
+  const goToDetailPage = () => navigation.navigate('DetailsScreen', {items});
+
+  // Fetch items from the API
   useEffect(() => {
     fetchItems();
   }, []);
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get('http://yourapi.com/items');
-      const items = response.data;
-      const veg = items.filter(item => item.category === 'Veg');
-      const nonVeg = items.filter(item => item.category === 'Non-Veg');
+      const response = await axios.get(
+        'http://10.0.2.2:8083/items/get/allitem',
+      );
+      const items = response.data; // Assuming the API response is an array of items
+
+      const veg = items.filter(item => item.category === 'veg');
+      const nonVeg = items.filter(item => item.category === 'non veg');
+
       setVegItems(veg);
       setNonVegItems(nonVeg);
       setFilteredVegItems(veg);
       setFilteredNonVegItems(nonVeg);
+      setItems(items); // Set all items for display
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching items:', error);
     }
   };
 
+  const addItemToCart = () => {
+    setSelected(true);
+    setAddItems(prevCount => prevCount + 1);
+  };
+
+  const removeItemFromCart = () => {
+    if (addItems === 1) {
+      setSelected(false);
+    }
+    setAddItems(prevCount => Math.max(prevCount - 1, 0));
+  };
+
+  // Handle searching for items
   const handleSearch = () => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
     const filteredVeg = vegItems.filter(item =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      item.name.toLowerCase().includes(lowerCaseQuery),
     );
     const filteredNonVeg = nonVegItems.filter(item =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      item.name.toLowerCase().includes(lowerCaseQuery),
     );
 
     setFilteredVegItems(filteredVeg);
     setFilteredNonVegItems(filteredNonVeg);
   };
 
-  // const renderItem = ({item}) => (
-  //   <View style={styles.card}>
-  //     {item.imageUrl ? (
-  //       <Image source={{uri: item.imageUrl}} style={styles.image} />
-  //     ) : null}
-  //     <Text style={styles.title}>{item.name}</Text>
-  //     <Text style={styles.price}>${item.price}</Text>
-  //     <Text style={styles.description}>{item.description}</Text>
-  //   </View>
-  // );
-
-  const renderItem = ({item}) => (
-    <View style={styles.card}>
-      {item.image ? (
-        <Image source={{uri: item.image}} style={styles.image} />
-      ) : null}
-      <Text style={styles.title}>{item.name}</Text>
-      <Text style={styles.price}>${item.price}</Text>
-      <Text style={styles.description}>{item.description}</Text>
-    </View>
-  );
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Search Bar */}
+    <ScrollView style={styles.container1}>
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchBar}
           placeholder="Search items..."
           value={searchQuery}
-          onChangeText={text => setSearchQuery(text)}
+          onChangeText={setSearchQuery}
         />
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>Search</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Veg Category */}
-      {filteredVegItems.length > 0 && (
-        <View>
-          <Text style={styles.categoryHeader}>Veg Items</Text>
-          <FlatList
-            data={filteredVegItems}
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            contentContainerStyle={styles.list}
-          />
-        </View>
-      )}
 
-      {/* Non-Veg Category */}
-      {filteredNonVegItems.length > 0 && (
-        <View>
-          <Text style={styles.categoryHeader}>Non-Veg Items</Text>
-          <FlatList
-            data={filteredNonVegItems}
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            contentContainerStyle={styles.list}
-          />
-        </View>
-      )}
-
-      <View>
-        {menu.map((item, index) => (
-          <FoodItem key={index} item={item} />
-        ))}
+      <View style={styles.itemList}>
+        {items.length > 0 ? (
+          items.map(item => (
+            <View key={item.id} style={styles.item}>
+              <View style={styles.container}>
+                <Pressable style={styles.pressable} onPress={goToDetailPage}>
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.itemName}>{item?.name}</Text>
+                    <Text style={styles.itemPrice}>₹{item?.price}</Text>
+                    <Text style={styles.itemDescription}>
+                      {item?.description.length > 40
+                        ? `${item?.description.slice(0, 40)}...`
+                        : item?.description}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={goToDetailPage}
+                      style={styles.iconContainer}>
+                      <Ionicons
+                        name="arrow-redo-circle-outline"
+                        size={25}
+                        color="#D97B29"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <Image
+                      style={styles.itemImage}
+                      source={{uri: item?.image}}
+                    />
+                    {selected ? (
+                      <View style={styles.quantityControl}>
+                        <Pressable onPress={removeItemFromCart}>
+                          <Text style={styles.controlText}>-</Text>
+                        </Pressable>
+                        <Text style={styles.quantityText}>{addItems}</Text>
+                        <Pressable onPress={addItemToCart}>
+                          <Text style={styles.controlText}>+</Text>
+                        </Pressable>
+                      </View>
+                    ) : (
+                      <Pressable
+                        onPress={addItemToCart}
+                        style={styles.addToCartButton}>
+                        <Text style={styles.controlText}>Add</Text>
+                      </Pressable>
+                    )}
+                  </View>
+                </Pressable>
+                {addItems > 0 && (
+                  <Pressable onPress={handleCart} style={styles.cartMessage}>
+                    <Text style={styles.cartText}>
+                      {addItems} item{addItems > 1 ? 's' : ''} added
+                    </Text>
+                    <Text style={styles.cartInfo}>
+                      Add item(s) worth ₹240 to reduce surge fee by ₹35.
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noItemsText}>No items found.</Text>
+        )}
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container1: {
     flex: 1,
+    paddingTop: 20,
     backgroundColor: '#f5f5f5',
   },
   searchContainer: {
@@ -257,6 +240,143 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  wishlistButton: {
+    padding: 5,
+  },
+  detailsButton: {
+    backgroundColor: '#D97B29',
+    borderRadius: 5,
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  detailsButtonText: {
+    color: 'white',
+  },
+  itemList: {
+    padding: 10,
+  },
+
+  itemText: {
+    fontSize: 16,
+  },
+  noItemsText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 18,
+    color: '#666',
+  },
+
+  container: {
+    padding: 5,
+    marginBottom: 20,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 2,
+  },
+  pressable: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  infoContainer: {
+    flex: 1,
+    marginRight: 10,
+  },
+  itemName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
+  itemPrice: {
+    fontSize: 15,
+    marginTop: 4,
+    fontWeight: '500',
+    color: '#D97B29',
+  },
+  starContainer: {
+    marginTop: 5,
+  },
+  star: {
+    paddingHorizontal: 3,
+  },
+  itemDescription: {
+    marginTop: 8,
+    color: 'gray',
+    fontSize: 16,
+  },
+  itemImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 8,
+  },
+  quantityControl: {
+    position: 'absolute',
+    top: 95,
+    left: 20,
+    borderColor: '#D97B29',
+    borderWidth: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 5,
+  },
+  addToCartButton: {
+    position: 'absolute',
+    top: 95,
+    left: 20,
+    borderColor: '#D97B29',
+    borderWidth: 1,
+    paddingHorizontal: 25,
+    paddingVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: 5,
+  },
+  controlText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#D97B29',
+  },
+  quantityText: {
+    marginHorizontal: 10,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  cartMessage: {
+    backgroundColor: '#D97B29',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    borderRadius: 5,
+  },
+  cartText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  cartInfo: {
+    textAlign: 'center',
+    color: 'white',
+    marginTop: 5,
+    fontWeight: '600',
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 10,
+    padding: 5,
   },
 });
 

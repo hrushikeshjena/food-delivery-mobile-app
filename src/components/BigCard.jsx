@@ -7,46 +7,61 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Material Icons
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const recommended = [
   {
     id: 0,
-    name: 'Lorem ipseum',
-    image: '../assets/close.jpg', // Replace with actual image URL
-    // time: '35-40 mins',
-    type: 'Andhra',
-    rating: 4.5,
+    name: 'Bavarian Feast',
+    image:
+      'https://cdn.pixabay.com/photo/2019/08/13/17/06/cheese-4403820_960_720.jpg',
+    type: 'German',
+    rating: 4.6,
     isFavorite: false,
-    distance: '2.5 km',
+    distance: '2.1 km',
     priceLevel: '$$',
-    description: 'Popular for authentic Andhra cuisine with spicy delicacies.',
+    description:
+      'Savor authentic Bavarian dishes, including pretzels and sausages, in a cozy atmosphere.',
   },
   {
     id: 1,
-    name: 'Lorem ipseum',
-    image: 'https://example.com/malgudi-days.jpg', // Replace with actual image URL
-    // time: '25-30 mins',
-    type: 'South Indian',
-    rating: 4.7,
+    name: 'Schnitzel Haus',
+    image:
+      'https://cdn.pixabay.com/photo/2018/10/28/19/44/schnitzel-3779726_1280.jpg',
+    type: 'German',
+    rating: 4.8,
     isFavorite: true,
-    distance: '1.8 km',
+    distance: '1.5 km',
     priceLevel: '$$',
     description:
-      'A cozy spot serving traditional South Indian dishes with modern twists.',
+      'A popular spot for crispy schnitzels and hearty sides, perfect for a satisfying meal.',
   },
   {
     id: 2,
-    name: 'Lorem ipseum',
-    image: 'https://example.com/spice-junction.jpg', // Replace with actual image URL
-    // time: '45-50 mins',
-    type: 'North Indian',
-    rating: 4.3,
+    name: 'Berlin Currywurst',
+    image:
+      'https://cdn.pixabay.com/photo/2019/05/26/01/06/currywurst-4229460_640.jpg',
+    type: 'Street Food',
+    rating: 4.4,
     isFavorite: false,
-    distance: '3.2 km',
+    distance: '3.0 km',
+    priceLevel: '$',
+    description:
+      'Enjoy the classic Berlin currywurst served with fries and tangy sauces in a casual setting.',
+  },
+
+  {
+    id: 3,
+    name: 'German Sausages',
+    image:
+      'https://cdn.pixabay.com/photo/2019/04/15/02/46/barbecue-4128310_640.jpg',
+    type: 'Main Course',
+    rating: 4.9,
+    isFavorite: true,
+    distance: '1.9 km',
     priceLevel: '$$$',
     description:
-      'Known for rich North Indian curries and an elegant dining experience.',
+      'A variety of grilled German sausages served with sauerkraut and mustard.',
   },
 ];
 
@@ -72,7 +87,7 @@ const BigCard = ({onDetailsPress}) => {
               <TouchableOpacity
                 style={styles.detailsButton}
                 onPress={() => onDetailsPress(item.id)}>
-                <Icon name="arrow-forward" size={20} color="#007bff" />
+                <Icon name="arrow-forward" size={20} color="#D97B29" />
               </TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.favoriteButton}>
@@ -85,9 +100,6 @@ const BigCard = ({onDetailsPress}) => {
           </View>
         ))}
       </ScrollView>
-
-
-      
     </View>
   );
 };

@@ -1,195 +1,228 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import React, {useState} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Image,
+  View,
+  Alert,
+} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Languages from '../utils/languages';
 
 const ProfileScreen = () => {
-  const [name, setName] = useState('Daniel Rozar');
-  const [email, setEmail] = useState('danielrozar@gmail.com');
-  const [school, setSchool] = useState('The Lawrenceville School');
-  const [nickname, setNickname] = useState('r.denial');
-  const [emergencyContact, setEmergencyContact] = useState('Jessica Curl');
-  const [emergencyNumber, setEmergencyNumber] = useState('+1-987654321');
+  const navigation = useNavigation();
+  const [imageUri, setImageUri] = useState(null);
+  const [name, setName] = useState('Your Name');
+  const [email, setEmail] = useState('your-email@example.com');
+  const [langModalVisible, setLangModalVisible] = useState(false);
+  const [selectedLang, setSelectedLang] = useState(0);
+
+  const pickImage = () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+    };
+
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        Alert.alert('Cancelled', 'Image selection was cancelled');
+      } else if (response.errorMessage) {
+        Alert.alert('Error', response.errorMessage);
+      } else {
+        const selectedImageUri = response.assets[0].uri;
+        setImageUri(selectedImageUri);
+      }
+    });
+  };
+
+  const handleEditProfile = () => {
+    navigation.navigate('EditProfile');
+  };
+
+  const handleYourOrder = () => {
+    navigation.navigate('YourOrder');
+  };
+
+  const logout = async () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {text: 'Cancel', style: 'cancel'},
+      {
+        text: 'OK',
+        onPress: async () => {
+          try {
+            // Clear user data from AsyncStorage
+            await AsyncStorage.clear();
+            // Navigate to LoginScreen after logout
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'WELCOME'}], // Adjust to your login screen name
+            });
+          } catch (error) {
+            console.error('Error logging out:', error);
+          }
+        },
+      },
+    ]);
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          {/* <Image source={require('./back-arrow.png')} style={styles.backArrow} /> */}
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Edit Profile</Text>
-      </View>
-
-      <View style={styles.profile}>
-        {/* <Image source={require('./profile-pic.png')} style={styles.profileImage} /> */}
-      </View>
-
-      <View style={styles.infoContainer}>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Name</Text>
-          <TextInput
-            style={styles.infoInput}
-            value={name}
-            onChangeText={setName}
-          />
+    <View style={styles.container}>
+      <ScrollView>
+        <View style={styles.profileHeader}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}>
+            <Icon name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={pickImage}>
+            <Image
+              source={{
+                uri:
+                  imageUri ||
+                  'https://pixabay.com/photos/india-men-portrait-indian-classic-5342927/',
+              }}
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
+          <Text style={styles.profileName}>{name}</Text>
+          <Text style={styles.profileEmail}>{email}</Text>
         </View>
 
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Email Address</Text>
-          <TextInput
-            style={styles.infoInput}
-            value={email}
-            onChangeText={setEmail}
-          />
+        <View style={styles.card}>
+          <View style={styles.optionsContainer}>
+            <TouchableOpacity
+              style={styles.optionCard}
+              onPress={handleEditProfile}>
+              <View style={styles.option}>
+                <Icon name="edit" size={20} color="#d97b29" />
+                <Text style={styles.optionText}>Edit Profile</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.optionCard}
+              onPress={handleYourOrder}>
+              <View style={styles.option}>
+                <Icon name="shopping-cart" size={20} color="#d97b29" />
+                <Text style={styles.optionText}>Your Order</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.optionCard}
+              onPress={() => setLangModalVisible(!langModalVisible)}>
+              <View style={styles.option}>
+                <Icon name="language" size={20} color="#d97b29" />
+                <Text style={styles.optionText}>Choose Languages</Text>
+              </View>
+            </TouchableOpacity>
+
+            <Languages
+              langModalVisible={langModalVisible}
+              setLangModalVisible={setLangModalVisible}
+              setLangIndex={setSelectedLang}
+            />
+
+            <TouchableOpacity style={styles.optionCard}>
+              <View style={styles.option}>
+                <Icon name="info" size={20} color="#d97b29" />
+                <Text style={styles.optionText}>About</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
         </View>
-
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>School</Text>
-          <TextInput
-            style={styles.infoInput}
-            value={school}
-            onChangeText={setSchool}
-          />
-        </View>
-
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Nick Name</Text>
-          <TextInput
-            style={styles.infoInput}
-            value={nickname}
-            onChangeText={setNickname}
-          />
-        </View>
-
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Emergency Contact</Text>
-          <TextInput
-            style={styles.infoInput}
-            value={emergencyContact}
-            onChangeText={setEmergencyContact}
-          />
-        </View>
-
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Emergency Number</Text>
-          <TextInput
-            style={styles.infoInput}
-            value={emergencyNumber}
-            onChangeText={setEmergencyNumber}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.updateButton}>
-          <Text style={styles.updateButtonText}>UPDATE PROFILE</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerItem}>
-          {/* <Image source={require('./calendar.png')} style={styles.footerIcon} /> */}
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          {/* <Image source={require('./document.png')} style={styles.footerIcon} /> */}
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          {/* <Image source={require('./user.png')} style={styles.footerIcon} /> */}
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          {/* <Image source={require('./settings.png')} style={styles.footerIcon} /> */}
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
+
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#fbfdfd',
   },
-  header: {
-    flexDirection: 'row',
+  profileHeader: {
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    padding: 20,
+    backgroundColor: '#d97b29',
   },
   backButton: {
-    padding: 8,
-  },
-  backArrow: {
-    width: 20,
-    height: 20,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 16,
-    color: '#333',
-  },
-  profile: {
-    alignItems: 'center',
-    padding: 24,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    position: 'absolute',
+    left: 15,
+    top: 15,
+    zIndex: 1,
   },
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderWidth: 3,
-    borderColor: '#007bff',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
-  infoContainer: {
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    margin: 16,
-    elevation: 2,
-  },
-  infoItem: {
-    marginBottom: 16,
-  },
-  infoLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  infoInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 12,
-    borderRadius: 4,
-    marginTop: 8,
-    backgroundColor: '#fff',
-  },
-  updateButton: {
-    backgroundColor: '#007bff',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-  updateButtonText: {
+  profileName: {
+    fontSize: 22,
     color: '#fff',
+    marginTop: 10,
+  },
+  profileEmail: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#fff',
   },
-  footer: {
+  card: {
+    marginTop: 20,
+    marginHorizontal: 15,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    padding: 15,
+  },
+  optionsContainer: {
+    marginTop: 10,
+  },
+  optionCard: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    marginVertical: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  option: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    alignItems: 'center',
   },
-  footerItem: {
-    padding: 8,
+  optionText: {
+    fontSize: 18,
+    marginLeft: 10,
   },
-  footerIcon: {
-    width: 24,
-    height: 24,
+  logoutButton: {
+    backgroundColor: '#d97b29',
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 50, // Adjust margin for better placement
+    borderRadius: 8,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 18,
   },
 });
-
-export default ProfileScreen;
