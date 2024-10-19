@@ -9,12 +9,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const DetailsScreen = ({ navigation, route }) => {
   const { item } = route.params; 
   const [isInCart, setIsInCart] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = useCallback(() => {
@@ -22,17 +20,8 @@ const DetailsScreen = ({ navigation, route }) => {
     navigation.navigate('CART', { item, quantity });
   }, [item, quantity, navigation]);
 
-  const handleFavorite = useCallback(() => {
-    setIsFavorited(prev => !prev);
-  }, []);
-
-  const increaseQuantity = useCallback(() => {
-    setQuantity(prevQuantity => prevQuantity + 1);
-  }, []);
-
-  const decreaseQuantity = useCallback(() => {
-    setQuantity(prevQuantity => Math.max(prevQuantity - 1, 1)); // Minimum quantity is 1
-  }, []);
+  const increaseQuantity = () => setQuantity(prev => prev + 1);
+  const decreaseQuantity = () => setQuantity(prev => Math.max(prev - 1, 1));
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,8 +31,6 @@ const DetailsScreen = ({ navigation, route }) => {
           size={28}
           color="#fff"
           onPress={() => navigation.goBack()}
-          accessible
-          accessibilityLabel="Go back"
         />
         <Text style={styles.title}>{item.name}</Text>
       </View>
@@ -52,52 +39,18 @@ const DetailsScreen = ({ navigation, route }) => {
         <View style={styles.content}>
           <Image style={styles.image} source={{ uri: item.imageUrl }} />
           <View style={styles.details}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Pressable onPress={handleFavorite} accessible accessibilityLabel="Toggle favorite">
-                <Icon
-                  name={isFavorited ? 'favorite' : 'favorite-border'}
-                  color='red'
-                  size={25}
-                />
-              </Pressable>
-            </View>
-
-            <View style={styles.tagContainer}>
-              {item.bestSeller && <Text style={styles.tag}>Best Seller</Text>}
-            </View>
-
-            <Text style={styles.detailsText}>
-              <FontAwesome name="info-circle" size={20} color="black" />
-              {` ${item.description}`}
-            </Text>
-            <Text style={styles.detailsText}>
-              <FontAwesome name="dollar" size={20} color="green" /> {`Price: $${item.price.toFixed(2)}`}
-            </Text>
-            <Text style={styles.detailsText}>
-              <FontAwesome name="star" size={20} color="gold" /> {`Rating: ${item.rating} stars`}
-            </Text>
-            <Text style={styles.detailsText}>
-              <FontAwesome name="users" size={20} color="blue" /> {`Ratings Count: ${item.ratings}`}
-            </Text>
+            <Text style={styles.itemName}>{item.name}</Text>
+            <Text style={styles.detailsText}>{item.description}</Text>
+            <Text style={styles.detailsText}>Price: ${item.price.toFixed(2)}</Text>
+            <Text style={styles.detailsText}>Rating: {item.rating} stars</Text>
 
             <Text style={styles.quantityLabel}>Quantity</Text>
             <View style={styles.quantityContainer}>
-              <Pressable
-                onPress={decreaseQuantity}
-                style={styles.quantityButton}
-                accessible
-                accessibilityLabel="Decrease quantity"
-              >
+              <Pressable onPress={decreaseQuantity} style={styles.quantityButton}>
                 <Text style={styles.quantityText}>-</Text>
               </Pressable>
               <Text style={styles.quantityText}>{quantity}</Text>
-              <Pressable
-                onPress={increaseQuantity}
-                style={styles.quantityButton}
-                accessible
-                accessibilityLabel="Increase quantity"
-              >
+              <Pressable onPress={increaseQuantity} style={styles.quantityButton}>
                 <Text style={styles.quantityText}>+</Text>
               </Pressable>
             </View>
@@ -106,8 +59,6 @@ const DetailsScreen = ({ navigation, route }) => {
               style={[styles.addToCartButton, isInCart && { backgroundColor: 'gray' }]}
               onPress={handleAddToCart}
               disabled={isInCart}
-              accessible
-              accessibilityLabel={isInCart ? 'Item already in cart' : 'Add to cart'}
             >
               <Text style={styles.addToCartText}>
                 {isInCart ? 'Added to Cart' : 'Add to Cart'}
@@ -144,28 +95,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
     borderRadius: 10,
+    marginBottom: 10,
   },
   details: {
     marginTop: 10,
   },
-  nameContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   itemName: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  tagContainer: {
-    marginVertical: 5,
-  },
-  tag: {
-    backgroundColor: '#D97B29',
-    color: '#fff',
-    padding: 5,
-    borderRadius: 5,
-    fontSize: 12,
   },
   detailsText: {
     marginVertical: 5,

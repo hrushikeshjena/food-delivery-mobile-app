@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  PermissionsAndroid,
   Image,
   ScrollView,
   Alert,
@@ -22,18 +21,16 @@ const AddItems = () => {
   const navigation = useNavigation();
   const [imageData, setImageData] = useState(null);
   const [name, setName] = useState('');
-  const [price, setPrice] = useState(0);
-  const [discountPrice, setDiscountPrice] = useState(0);
+  const [price, setPrice] = useState('');
+  const [discountPrice, setDiscountPrice] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [items, setItems] = useState([]);
 
-  // Fetch items when the component is mounted
   useEffect(() => {
     fetchItems();
   }, []);
 
-  // Axios GET request to fetch all items
   const fetchItems = async () => {
     try {
       const response = await axios.get(`${API_URL}/items/get/allitem`);
@@ -51,26 +48,27 @@ const AddItems = () => {
     }
   };
 
-  // Axios POST request to create a new item
   const handleCreate = async () => {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('price', price.toString());
-    formData.append('discountPrice', discountPrice.toString());
-    formData.append('description', description);
-    formData.append('category', category);
-
-    // Append image as binary data
-    if (imageData) {
-      formData.append('image', {
-        uri: imageData.uri,
-        type: imageData.type,
-        name: imageData.fileName || 'image.jpg',
-      });
+    if (!name || !price || !description || !category || !imageData) {
+      Alert.alert('Please fill all fields');
+      return;
     }
 
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('price', price);
+    formData.append('discountPrice', discountPrice);
+    formData.append('description', description);
+    formData.append('category', category);
+    
+    // Append image as binary data
+    formData.append('image', {
+      uri: imageData.uri,
+      type: imageData.type,
+      name: imageData.fileName || 'image.jpg',
+    });
+
     try {
-      // Axios POST request to add a new item
       const response = await axios.post(
         `${API_URL}/items/create/add-item`,
         formData,
@@ -82,18 +80,17 @@ const AddItems = () => {
       );
       setItems([...items, response.data]);
       Alert.alert('Item added successfully');
+      resetForm();
     } catch (error) {
       console.error('Error adding item:', error);
       Alert.alert('Failed to add item');
     }
-
-    resetForm();
   };
 
   const resetForm = () => {
     setName('');
-    setPrice(0);
-    setDiscountPrice(0);
+    setPrice('');
+    setDiscountPrice('');
     setDescription('');
     setCategory('');
     setImageData(null);
@@ -124,13 +121,15 @@ const AddItems = () => {
       />
       <TextInput
         placeholder="Enter item price"
-        onChangeText={text => setPrice}
+        value={price}
+        onChangeText={setPrice}
         keyboardType="numeric"
         style={styles.inputStyle}
       />
       <TextInput
         placeholder="Enter item discount price"
-        onChangeText={text => setDiscountPrice}
+        value={discountPrice}
+        onChangeText={setDiscountPrice}
         keyboardType="numeric"
         style={styles.inputStyle}
       />

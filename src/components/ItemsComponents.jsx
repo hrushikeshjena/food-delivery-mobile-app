@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#006a4e',
+    backgroundColor: '#0b421a',
     borderRadius: 4,
     paddingHorizontal: 4,
     paddingVertical: 5,

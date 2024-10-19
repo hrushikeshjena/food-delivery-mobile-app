@@ -26,10 +26,19 @@ const Cart = ({navigation, route}) => {
   const [instructions, setInstructions] = useState('')
 
   useEffect(() => {
-    if (route.params?.items) {
-      setCart(prevCart => [...prevCart, ...route.params.items])
+    if (route.params?.cartItems) {
+      setCart(prevCart => {
+        const updatedCart = [...prevCart]
+        Object.entries(route.params.cartItems).forEach(([itemId, quantity]) => {
+          const item = {id: itemId, name: 'Item Name', price: 100} // Replace with actual item details
+          for (let i = 0; i < quantity; i++) {
+            updatedCart.push(item)
+          }
+        })
+        return updatedCart
+      })
     }
-  }, [route.params?.items])
+  }, [route.params?.cartItems])
 
   const total = cart.reduce((sum, item) => {
     const itemQuantity = quantity[item.name] || 1

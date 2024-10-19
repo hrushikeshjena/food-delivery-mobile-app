@@ -44,15 +44,12 @@ const ItemCard = React.memo(
         <View>
           <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
           {addItems[item.id] ? (
-            <View style={styles.quantityControl}>
-              <Pressable onPress={() => removeItemFromCart(item.id)}>
-                <Text style={styles.controlText}>-</Text>
-              </Pressable>
-              <Text style={styles.quantityText}>{addItems[item.id]}</Text>
-              <Pressable onPress={() => addItemToCart(item.id)}>
-                <Text style={styles.controlText}>+</Text>
-              </Pressable>
-            </View>
+            <QuantityControl
+              itemId={item.id}
+              quantity={addItems[item.id]}
+              addItemToCart={addItemToCart}
+              removeItemFromCart={removeItemFromCart}
+            />
           ) : (
             <Pressable
               onPress={() => addItemToCart(item.id)}
@@ -64,6 +61,23 @@ const ItemCard = React.memo(
       </Pressable>
     </View>
   ),
+)
+
+const QuantityControl = ({
+  itemId,
+  quantity,
+  addItemToCart,
+  removeItemFromCart,
+}) => (
+  <View style={styles.quantityControl}>
+    <Pressable onPress={() => removeItemFromCart(itemId)}>
+      <Text style={styles.controlText}>-</Text>
+    </Pressable>
+    <Text style={styles.quantityText}>{quantity}</Text>
+    <Pressable onPress={() => addItemToCart(itemId)}>
+      <Text style={styles.controlText}>+</Text>
+    </Pressable>
+  </View>
 )
 
 const SearchScreen = () => {
@@ -107,7 +121,7 @@ const SearchScreen = () => {
     if (filter === 'veg') {
       return filtered.filter(item => item.category === 'veg')
     } else if (filter === 'non-veg') {
-      return filtered.filter(item => item.category === 'non veg')
+      return filtered.filter(item => item.category === 'nonVeg')
     }
     return filtered
   }
@@ -122,10 +136,12 @@ const SearchScreen = () => {
   const removeItemFromCart = itemId => {
     setAddItems(prevItems => {
       const updatedItems = {...prevItems}
-      if (updatedItems[itemId] > 1) {
-        updatedItems[itemId]--
-      } else {
-        delete updatedItems[itemId] // Remove item if quantity is 0
+      if (updatedItems[itemId]) {
+        if (updatedItems[itemId] > 1) {
+          updatedItems[itemId]--
+        } else {
+          delete updatedItems[itemId] 
+        }
       }
       return updatedItems
     })
@@ -159,7 +175,7 @@ const SearchScreen = () => {
   const filteredItems = getFilteredItems()
 
   return (
-    <ScrollView style={styles.container1}>
+    <ScrollView style={styles.container}>
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchBar}
@@ -171,30 +187,19 @@ const SearchScreen = () => {
 
       {/* Filter Buttons */}
       <View style={styles.filterContainer}>
-        <TouchableOpacity
-          onPress={() => setFilter('all')}
-          style={[
-            styles.filterButton,
-            filter === 'all' && styles.activeFilter,
-          ]}>
-          <Text style={styles.filterText}>All</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setFilter('veg')}
-          style={[
-            styles.filterButton,
-            filter === 'veg' && styles.activeFilter,
-          ]}>
-          <Text style={styles.filterText}>Veg</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setFilter('non-veg')}
-          style={[
-            styles.filterButton,
-            filter === 'non-veg' && styles.activeFilter,
-          ]}>
-          <Text style={styles.filterText}>Non-Veg</Text>
-        </TouchableOpacity>
+        {['all', 'veg', 'non-veg'].map(type => (
+          <TouchableOpacity
+            key={type}
+            onPress={() => setFilter(type)}
+            style={[
+              styles.filterButton,
+              filter === type && styles.activeFilter,
+            ]}>
+            <Text style={styles.filterText}>
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <View style={styles.itemList}>
@@ -210,7 +215,7 @@ const SearchScreen = () => {
                 goToDetailPage={goToDetailPage}
               />
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id} // Ensure key is a string
           />
         ) : (
           <Text style={styles.noItemsText}>No items found.</Text>
@@ -220,9 +225,8 @@ const SearchScreen = () => {
       {cartList.length > 0 && (
         <View style={styles.checkoutView}>
           <Text style={{color: '#000', fontWeight: '600'}}>
-            {'Items(' + cartList.length + ')\nTotal: ₹' + getTotal()}
+            {'Items (' + cartList.length + ')\nTotal: ₹' + getTotal()}
           </Text>
-
           <TouchableOpacity
             style={[styles.addToCartButton, {width: 100, height: 40}]}
             onPress={() => navigation.navigate('CART', {cartItems: addItems})}>
@@ -235,7 +239,7 @@ const SearchScreen = () => {
 }
 
 const styles = StyleSheet.create({
-  container1: {
+  container: {
     flex: 1,
     paddingTop: 20,
     backgroundColor: '#f5f5f5',
@@ -325,6 +329,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
+    justifyContent: 'space-between',
   },
   controlText: {
     fontSize: 20,

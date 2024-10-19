@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     padding: 10,
-    backgroundColor: '#D97B29',
+    backgroundColor: '#0b421a',
     borderRadius: 8,
   },
   text: {
