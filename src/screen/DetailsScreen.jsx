@@ -9,11 +9,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { color } from '../utils/color';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const DetailsScreen = ({ navigation, route }) => {
-  const { item } = route.params;
+  const { item } = route.params; 
   const [isInCart, setIsInCart] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -24,15 +23,15 @@ const DetailsScreen = ({ navigation, route }) => {
   }, [item, quantity, navigation]);
 
   const handleFavorite = useCallback(() => {
-    setIsFavorited((prev) => !prev);
+    setIsFavorited(prev => !prev);
   }, []);
 
   const increaseQuantity = useCallback(() => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
+    setQuantity(prevQuantity => prevQuantity + 1);
   }, []);
 
   const decreaseQuantity = useCallback(() => {
-    setQuantity((prevQuantity) => Math.max(prevQuantity - 1, 1)); // Minimum quantity is 1
+    setQuantity(prevQuantity => Math.max(prevQuantity - 1, 1)); // Minimum quantity is 1
   }, []);
 
   return (
@@ -51,7 +50,7 @@ const DetailsScreen = ({ navigation, route }) => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <Image style={styles.image} source={{ uri: item.image }} />
+          <Image style={styles.image} source={{ uri: item.imageUrl }} />
           <View style={styles.details}>
             <View style={styles.nameContainer}>
               <Text style={styles.itemName}>{item.name}</Text>

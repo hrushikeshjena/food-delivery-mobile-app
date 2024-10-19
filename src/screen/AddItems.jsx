@@ -1,18 +1,18 @@
-
-
 import {
-  ScrollView,
-  StyleSheet,
+  View,
   Text,
+  StyleSheet,
   TextInput,
   TouchableOpacity,
-  View,
+  PermissionsAndroid,
+  Image,
+  ScrollView,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {Picker} from '@react-native-picker/picker';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 
@@ -20,7 +20,7 @@ const API_URL = 'http://10.0.2.2:8083';
 
 const AddItems = () => {
   const navigation = useNavigation();
-  const [image, setImage] = useState(null);
+  const [imageData, setImageData] = useState(null);
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [discountPrice, setDiscountPrice] = useState(0);
@@ -44,11 +44,10 @@ const AddItems = () => {
   };
 
   const openGallery = async () => {
-    const result = await launchImageLibrary({mediaType: 'photo', quality: 1});
-    if (result.didCancel) {
-      console.log('User cancelled image picker');
-    } else {
-      setImage(result.assets[0]);
+    const result = await launchImageLibrary({ mediaType: 'photo', quality: 1 });
+    if (!result.didCancel && result.assets) {
+      console.log(result);
+      setImageData(result.assets[0]);
     }
   };
 
@@ -62,11 +61,11 @@ const AddItems = () => {
     formData.append('category', category);
 
     // Append image as binary data
-    if (image) {
+    if (imageData) {
       formData.append('image', {
-        uri: image.uri,
-        type: image.type,
-        name: image.fileName || 'image.jpg', // Default file name if not provided
+        uri: imageData.uri,
+        type: imageData.type,
+        name: imageData.fileName || 'image.jpg',
       });
     }
 
@@ -97,7 +96,7 @@ const AddItems = () => {
     setDiscountPrice(0);
     setDescription('');
     setCategory('');
-    setImage(null); // Reset image as well
+    setImageData(null);
   };
 
   return (
@@ -111,6 +110,12 @@ const AddItems = () => {
         </TouchableOpacity>
       </View>
       <Text style={styles.headerText}>Add Items</Text>
+      {imageData && (
+        <Image
+          source={{ uri: imageData.uri }}
+          style={styles.imageStyle}
+        />
+      )}
       <TextInput
         placeholder="Enter item name"
         value={name}
@@ -119,13 +124,13 @@ const AddItems = () => {
       />
       <TextInput
         placeholder="Enter item price"
-        onChangeText={text => setPrice(parseFloat(text))}
+        onChangeText={text => setPrice}
         keyboardType="numeric"
         style={styles.inputStyle}
       />
       <TextInput
         placeholder="Enter item discount price"
-        onChangeText={text => setDiscountPrice(parseFloat(text))}
+        onChangeText={text => setDiscountPrice}
         keyboardType="numeric"
         style={styles.inputStyle}
       />
@@ -135,7 +140,6 @@ const AddItems = () => {
         onChangeText={setDescription}
         style={styles.inputStyle}
       />
-
       <Picker
         selectedValue={category}
         onValueChange={itemValue => setCategory(itemValue)}
@@ -144,7 +148,6 @@ const AddItems = () => {
         <Picker.Item label="Veg" value="veg" />
         <Picker.Item label="Non Veg" value="nonVeg" />
       </Picker>
-
       <TouchableOpacity style={styles.pickBtn} onPress={openGallery}>
         <Text style={styles.pickBtnText}>Pick Image From Gallery</Text>
       </TouchableOpacity>
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   backText: {
-    color: '#D97B29', // Corrected the hex code
+    color: '#D97B29',
     fontSize: 16,
     marginLeft: 5,
   },
@@ -232,12 +235,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
-  orText: {
-    alignSelf: 'center',
-    marginVertical: 20,
-    fontSize: 16,
-    fontStyle: 'italic',
-  },
   itemList: {
     marginTop: 20,
     borderTopWidth: 1,
@@ -255,5 +252,12 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
+  },
+  imageStyle: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginTop: 20,
   },
 });

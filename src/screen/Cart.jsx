@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'
 import {
   StyleSheet,
   Text,
@@ -10,72 +10,42 @@ import {
   TextInput,
   Modal,
   TouchableOpacity,
-} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Octicons from 'react-native-vector-icons/Octicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
-import RNPickerSelect from 'react-native-picker-select';
+} from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Octicons from 'react-native-vector-icons/Octicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
+import RNPickerSelect from 'react-native-picker-select'
 
 // Main Cart Component
 const Cart = ({navigation, route}) => {
-  const [cart, setCart] = useState([
-    // {
-    //   id: 1,
-    //   name: 'Laptop',
-    //   price: 1000,
-    //   quantity: 1,
-    //   image:
-    //     'https://images.pexels.com/photos/17696654/pexels-photo-17696654/free-photo-of-rice-with-meat.jpeg?auto=compress&cs=tinysrgb&w=600', // Update this with the actual image path
-    // },
-    // {
-    //   id: 2,
-    //   name: 'Phone',
-    //   price: 500,
-    //   quantity: 2,
-    //   image:
-    //     'https://cdn.pixabay.com/photo/2022/03/02/12/42/paneer-7043099_640.jpg', // Update this with the actual image path
-    // },
-    // {
-    //   id: 3,
-    //   name: 'Headphones',
-    //   price: 150,
-    //   quantity: 1,
-    //   image:
-    //     'https://cdn.pixabay.com/photo/2018/12/04/16/49/tandoori-3856045_640.jpg', // Update this with the actual image path
-    // },
-  ]);
+  const [cart, setCart] = useState([])
+  const [quantity, setQuantity] = useState({})
+  const [paymentMethod, setPaymentMethod] = useState('')
+  const [modalVisible, setModalVisible] = useState(false)
+  const [instructions, setInstructions] = useState('')
 
-  const [quantity, setQuantity] = useState({});
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [instructions, setInstructions] = useState('');
-
-  // Initialize cart from route params
   useEffect(() => {
     if (route.params?.items) {
-      setCart(route.params.items);
+      setCart(prevCart => [...prevCart, ...route.params.items])
     }
-  }, [route.params?.items]);
+  }, [route.params?.items])
 
-  // Calculate total price
   const total = cart.reduce((sum, item) => {
-    const itemQuantity = quantity[item.name] || item.quantity;
-    return sum + item.price * itemQuantity;
-  }, 0);
+    const itemQuantity = quantity[item.name] || 1
+    return sum + item.price * itemQuantity
+  }, 0)
 
-  const paymentOptions = [{label: 'Paypal', value: 'paypal'}];
+  const paymentOptions = [{label: 'Paypal', value: 'paypal'}]
 
-  // Update quantity for an item
   const updateQuantity = (itemName, change) => {
     setQuantity(prev => ({
       ...prev,
       [itemName]: Math.max((prev[itemName] || 1) + change, 1),
-    }));
-  };
+    }))
+  }
 
-  // Navigation functions
-  const handleAddItems = () => navigation.navigate('SEARCH');
+  const handleAddItems = () => navigation.navigate('SEARCH')
 
   const handleClearCart = () => {
     Alert.alert('Clear Cart', 'Are you sure you want to clear the cart?', [
@@ -83,18 +53,36 @@ const Cart = ({navigation, route}) => {
       {
         text: 'OK',
         onPress: () => {
-          setCart([]);
-          setQuantity({});
+          setCart([])
+          setQuantity({})
         },
       },
-    ]);
-  };
+    ])
+  }
 
   const addCookingInstructions = () => {
-    console.log('Cooking Instructions:', instructions);
-    setInstructions('');
-    setModalVisible(false);
-  };
+    console.log('Cooking Instructions:', instructions)
+    setInstructions('')
+    setModalVisible(false)
+  }
+
+  const handleCheckout = () => {
+    if (!paymentMethod) {
+      Alert.alert('Error', 'Please select a payment method.')
+      return
+    }
+
+    Alert.alert('Success', 'Your order has been placed successfully!', [
+      {
+        text: 'OK',
+        onPress: () => {
+          setCart([])
+          setQuantity({})
+          setPaymentMethod('')
+        },
+      },
+    ])
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -117,7 +105,7 @@ const Cart = ({navigation, route}) => {
           paymentMethod={paymentMethod}
           setPaymentMethod={setPaymentMethod}
           handleClearCart={handleClearCart}
-          navigation={navigation}
+          handleCheckout={handleCheckout}
         />
       )}
       <AddInstructionsModal
@@ -128,8 +116,8 @@ const Cart = ({navigation, route}) => {
         setInstructions={setInstructions}
       />
     </ScrollView>
-  );
-};
+  )
+}
 
 // Modal for adding cooking instructions
 const AddInstructionsModal = ({
@@ -139,13 +127,13 @@ const AddInstructionsModal = ({
   instructions,
   setInstructions,
 }) => (
-  <Modal transparent visible={visible} animationType="slide">
+  <Modal transparent visible={visible} animationType='slide'>
     <View style={styles.modalContainer}>
       <View style={styles.modalContent}>
         <Text style={styles.modalTitle}>Add Cooking Instructions</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your instructions here"
+          placeholder='Enter your instructions here'
           value={instructions}
           onChangeText={setInstructions}
         />
@@ -160,20 +148,20 @@ const AddInstructionsModal = ({
       </View>
     </View>
   </Modal>
-);
+)
 
 // Header Component
 const Header = ({navigation}) => (
   <View style={styles.header}>
     <Ionicons
-      name="arrow-back-outline"
-      color="black"
+      name='arrow-back-outline'
+      color='black'
       size={30}
       onPress={() => navigation.goBack()}
     />
     <Text style={styles.headerText}>Hotel</Text>
   </View>
-);
+)
 
 // Delivery Info Component
 const DeliveryInfo = () => (
@@ -182,7 +170,7 @@ const DeliveryInfo = () => (
       Delivery in <Text style={styles.boldText}>35-40 mins</Text>
     </Text>
   </View>
-);
+)
 
 // Items Added Section
 const ItemsAdded = ({cart, quantity, updateQuantity}) => (
@@ -201,21 +189,24 @@ const ItemsAdded = ({cart, quantity, updateQuantity}) => (
       ))
     )}
   </View>
-);
+)
 
 // Empty Cart Component
 const EmptyCart = () => (
   <View style={styles.emptyCartContainer}>
     <Text style={styles.emptyCartText}>🛒 No items added to the cart</Text>
   </View>
-);
+)
 
 // Individual Cart Item
 const CartItem = ({item, quantity, updateQuantity}) => (
   <Pressable style={styles.cartItemContainer}>
     <View style={styles.cartItemRow}>
       <Text style={styles.itemName}>{item.name}</Text>
-      <Image style={styles.itemImage} source={{uri: item.image}} />
+      <Image
+        style={styles.itemImage}
+        source={{uri: item.image || 'fallback_image_url_here'}}
+      />
     </View>
     <QuantityControl
       item={item}
@@ -223,11 +214,13 @@ const CartItem = ({item, quantity, updateQuantity}) => (
       updateQuantity={updateQuantity}
     />
     <View style={styles.priceRow}>
-      <Text style={styles.priceText}>₹{item.price * quantity}</Text>
+      <Text style={styles.priceText}>
+        ₹{(item.price * quantity).toFixed(2)}
+      </Text>
       <Text style={styles.quantityText}>Quantity: {quantity}</Text>
     </View>
   </Pressable>
-);
+)
 
 // Quantity Control for Cart Item
 const QuantityControl = ({item, quantity, updateQuantity}) => (
@@ -240,23 +233,23 @@ const QuantityControl = ({item, quantity, updateQuantity}) => (
       <Text style={styles.controlText}>+</Text>
     </Pressable>
   </View>
-);
+)
 
 // Add More Section
 const AddMoreSection = ({onAddItems, onOpenModal}) => (
   <View>
     <AddMoreItem
-      text="Add more Items"
+      text='Add more Items'
       onPress={onAddItems}
-      icon={<Octicons name="plus-circle" color="#d97b29" size={30} />}
+      icon={<Octicons name='plus-circle' color='#d97b29' size={30} />}
     />
     <AddMoreItem
-      text="Add Cooking Instructions"
+      text='Add Cooking Instructions'
       onPress={onOpenModal}
-      icon={<Entypo name="new-message" color="#d97b29" size={30} />}
+      icon={<Entypo name='new-message' color='#d97b29' size={30} />}
     />
   </View>
-);
+)
 
 // Add More Item Component
 const AddMoreItem = ({text, icon, onPress}) => (
@@ -265,21 +258,22 @@ const AddMoreItem = ({text, icon, onPress}) => (
       {icon}
       <Text style={styles.addMoreText}>{text}</Text>
     </View>
-    <AntDesign name="right" color="#d97b29" size={30} />
+    <AntDesign name='right' color='#d97b29' size={30} />
   </Pressable>
-);
+)
 
+// Billing Details Component
 const BillingDetails = ({total}) => (
   <View style={styles.billingDetails}>
     <Text style={styles.billingTitle}>Billing Details</Text>
     <View style={styles.billingInfo}>
-      {renderBillingRow('Item Total', `€${total}`, {color: '#000'})}
-      {renderBillingRow('Delivery Fee', '€15.00', {color: '#000'})}
-      {renderBillingRow('Delivery Partner Fee', '€75', {color: '#000'})}
-      {renderBillingRow('Total Payable', `€${total + 90}`, true)}
+      {renderBillingRow('Item Total', `₹${total.toFixed(2)}`, {color: '#000'})}
+      {renderBillingRow('Delivery Fee', '₹15.00', {color: '#000'})}
+      {renderBillingRow('Delivery Partner Fee', '₹75.00', {color: '#000'})}
+      {renderBillingRow('Total Payable', `₹${(total + 90).toFixed(2)}`, true)}
     </View>
   </View>
-);
+)
 
 // Render Billing Row Helper
 const renderBillingRow = (label, amount, bold = false) => (
@@ -287,7 +281,7 @@ const renderBillingRow = (label, amount, bold = false) => (
     <Text style={[styles.billingText, bold && styles.boldText]}>{label}</Text>
     <Text style={[styles.billingText, bold && styles.boldText]}>{amount}</Text>
   </View>
-);
+)
 
 // Payment Footer Component
 const PaymentFooter = ({
@@ -296,263 +290,143 @@ const PaymentFooter = ({
   paymentMethod,
   setPaymentMethod,
   handleClearCart,
-  navigation,
-}) => {
-  // Handle Paypal Payment Navigation
-  const handlePaypalAccount = () => {
-    if (paymentMethod === 'paypal') {
-      navigation.navigate('PAYPAL');
-    } else {
-      Alert.alert('Error', 'Please select the payment method.');
-    }
-  };
-
-  return (
-    <Pressable style={styles.footerContainer}>
-      <View>
-        <Text style={styles.paymentText}>Pay Using</Text>
-        <RNPickerSelect
-          onValueChange={setPaymentMethod}
-          items={paymentOptions}
-          placeholder={{label: 'Select a payment method...', value: ''}}
-          style={pickerSelectStyles}
-        />
-        <Text style={styles.codText}>
-          {paymentMethod || 'Select payment method'}
-        </Text>
-      </View>
-
-      <Pressable style={styles.placeOrderButton} onPress={handlePaypalAccount}>
-        <Text style={styles.placeOrderText}>Place Order</Text>
-      </Pressable>
-      <Pressable style={styles.clearCartButton} onPress={handleClearCart}>
-        <Text style={styles.clearCartText}>Clear Cart</Text>
-      </Pressable>
+  handleCheckout,
+}) => (
+  <Pressable style={styles.footerContainer}>
+    <View>
+      <Text style={styles.paymentText}>Pay Using</Text>
+      <RNPickerSelect
+        onValueChange={setPaymentMethod}
+        items={paymentOptions}
+        placeholder={{label: 'Select a payment method...', value: ''}}
+        style={pickerSelectStyles}
+      />
+      <Text style={styles.codText}>
+        {paymentMethod || 'Select payment method'}
+      </Text>
+    </View>
+    <Pressable style={styles.placeOrderButton} onPress={handleCheckout}>
+      <Text style={styles.placeOrderText}>Place Order</Text>
     </Pressable>
-  );
-};
+    <Pressable style={styles.clearCartButton} onPress={handleClearCart}>
+      <Text style={styles.clearCartText}>Clear Cart</Text>
+    </Pressable>
+  </Pressable>
+)
 
 // Styles
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  deliveryContainer: {
-    padding: 16,
-  },
-  delivery: {
-    fontSize: 16,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
-  itemsAddedSection: {
-    padding: 16,
-  },
-  itemsAddedText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  emptyCartContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  emptyCartText: {
-    fontSize: 16,
-    color: '#999',
-  },
+  container: {flex: 1, backgroundColor: '#fff'},
+  header: {flexDirection: 'row', alignItems: 'center', padding: 16},
+  headerText: {fontSize: 20, marginLeft: 10},
+  deliveryContainer: {padding: 16},
+  delivery: {fontSize: 16},
+  boldText: {fontWeight: 'bold'},
+  itemsAddedSection: {padding: 16},
+  itemsAddedText: {fontSize: 18, fontWeight: 'bold'},
+  emptyCartContainer: {alignItems: 'center', marginTop: 20},
+  emptyCartText: {fontSize: 18},
   cartItemContainer: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    marginBottom: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   cartItemRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  itemName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  itemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 5,
-  },
+  itemName: {fontSize: 18},
+  itemImage: {width: 50, height: 50, borderRadius: 5},
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 8,
   },
-  priceText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  quantityText: {
-    fontSize: 14,
-    color: '#666',
-  },
+  priceText: {fontSize: 16},
+  quantityText: {fontSize: 16},
   quantityControl: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
+    marginTop: 8,
   },
-  controlText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+  controlText: {fontSize: 24},
   addMoreItemsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginVertical: 5,
-    elevation: 1,
-  },
-  addItemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  addMoreText: {
-    marginLeft: 10,
-    fontSize: 16,
-  },
-  billingDetails: {
     padding: 16,
   },
-  billingTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  billingInfo: {
-    marginTop: 10,
-    color: '#000',
-  },
-  billingRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-  },
-  billingText: {
-    fontSize: 16,
-  },
-  footerContainer: {
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderColor: '#eaeaea',
-  },
-  paymentText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  codText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#666',
-  },
+  addItemRow: {flexDirection: 'row', alignItems: 'center'},
+  addMoreText: {fontSize: 18, marginLeft: 8},
+  billingDetails: {padding: 16, borderTopWidth: 1, borderColor: '#ccc'},
+  billingTitle: {fontSize: 18, fontWeight: 'bold'},
+  billingInfo: {marginTop: 16},
+  billingRow: {flexDirection: 'row', justifyContent: 'space-between'},
+  billingText: {fontSize: 16},
+  footerContainer: {padding: 16, borderTopWidth: 1, borderColor: '#ccc'},
+  paymentText: {fontSize: 16},
+  codText: {fontSize: 16, marginVertical: 8},
   placeOrderButton: {
     backgroundColor: '#d97b29',
     padding: 12,
-    borderRadius: 5,
     alignItems: 'center',
-    marginTop: 10,
+    borderRadius: 5,
+    marginVertical: 8,
   },
-  placeOrderText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+  placeOrderText: {color: '#fff', fontSize: 18},
   clearCartButton: {
     backgroundColor: '#ff4d4d',
     padding: 12,
+    alignItems: 'center',
     borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
   },
-  clearCartText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
+  clearCartText: {color: '#fff', fontSize: 18},
+  modalContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
   modalContent: {
     width: '80%',
     backgroundColor: '#fff',
-    borderRadius: 10,
     padding: 20,
-    elevation: 5,
+    borderRadius: 10,
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
+  modalTitle: {fontSize: 20, marginBottom: 10},
   input: {
-    borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 5,
+    borderColor: '#ccc',
     padding: 10,
-    marginBottom: 20,
+    borderRadius: 5,
+    marginBottom: 10,
   },
   button: {
     backgroundColor: '#d97b29',
-    padding: 12,
-    borderRadius: 5,
+    padding: 10,
     alignItems: 'center',
+    borderRadius: 5,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  closeButton: {
-    backgroundColor: '#ff4d4d',
-    marginTop: 10,
-  },
-});
+  buttonText: {color: '#fff'},
+  closeButton: {backgroundColor: '#ccc', marginTop: 10},
+})
 
-// Picker Styles
-const pickerSelectStyles = StyleSheet.create({
+// Picker styles
+const pickerSelectStyles = {
   inputIOS: {
     fontSize: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
     color: 'black',
-    marginTop: 10,
+    marginVertical: 10,
   },
   inputAndroid: {
     fontSize: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
     color: 'black',
-    marginTop: 10,
+    marginVertical: 10,
   },
-});
+}
 
-export default Cart;
+export default Cart
