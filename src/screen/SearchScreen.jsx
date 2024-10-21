@@ -45,7 +45,7 @@ const ItemCard = React.memo(
           <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
           {addItems[item.id] ? (
             <QuantityControl
-              itemId={item.id}
+              item_id={item.id}
               quantity={addItems[item.id]}
               addItemToCart={addItemToCart}
               removeItemFromCart={removeItemFromCart}
@@ -64,17 +64,17 @@ const ItemCard = React.memo(
 )
 
 const QuantityControl = ({
-  itemId,
+  item_id,
   quantity,
   addItemToCart,
   removeItemFromCart,
 }) => (
   <View style={styles.quantityControl}>
-    <Pressable onPress={() => removeItemFromCart(itemId)}>
+    <Pressable onPress={() => removeItemFromCart(item_id)}>
       <Text style={styles.controlText}>-</Text>
     </Pressable>
     <Text style={styles.quantityText}>{quantity}</Text>
-    <Pressable onPress={() => addItemToCart(itemId)}>
+    <Pressable onPress={() => addItemToCart(item_id)}>
       <Text style={styles.controlText}>+</Text>
     </Pressable>
   </View>
@@ -126,21 +126,21 @@ const SearchScreen = () => {
     return filtered
   }
 
-  const addItemToCart = itemId => {
+  const addItemToCart = item_id => {
     setAddItems(prevItems => ({
       ...prevItems,
-      [itemId]: (prevItems[itemId] || 0) + 1,
+      [item_id]: (prevItems[item_id] || 0) + 1,
     }))
   }
 
-  const removeItemFromCart = itemId => {
+  const removeItemFromCart = item_id => {
     setAddItems(prevItems => {
       const updatedItems = {...prevItems}
-      if (updatedItems[itemId]) {
-        if (updatedItems[itemId] > 1) {
-          updatedItems[itemId]--
+      if (updatedItems[item_id]) {
+        if (updatedItems[item_id] > 1) {
+          updatedItems[item_id]--
         } else {
-          delete updatedItems[itemId] 
+          delete updatedItems[item_id] 
         }
       }
       return updatedItems
@@ -152,8 +152,8 @@ const SearchScreen = () => {
   }
 
   const getTotal = () => {
-    return Object.entries(addItems).reduce((total, [itemId, quantity]) => {
-      const item = items.find(item => item.id === itemId)
+    return Object.entries(addItems).reduce((total, [item_id, quantity]) => {
+      const item = items.find(item => item.id === item_id)
       return total + (item ? item.price * quantity : 0)
     }, 0)
   }

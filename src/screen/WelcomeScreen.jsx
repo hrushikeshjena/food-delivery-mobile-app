@@ -5,25 +5,25 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import React from 'react';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { fonts } from '../utils/fonts';
-import { useNavigation } from '@react-navigation/native';
-import WarningMessage from '../components/WarningMsg';
+} from 'react-native'
+import React from 'react'
+import {Colors} from 'react-native/Libraries/NewAppScreen'
+import {fonts} from '../utils/fonts'
+import {useNavigation} from '@react-navigation/native'
+import WarningMessage from '../components/WarningMsg'
 
-export default function HomeScreen() {
-  const navigation = useNavigation();
+export default function HomeScreen () {
+  const navigation = useNavigation()
 
   const handleAdmin = () => {
-    navigation.navigate('ADMIN');
-  };
+    navigation.navigate('ADMIN')
+  }
 
   const handleUser = () => {
-    navigation.navigate('USER');
-  };
+    navigation.navigate('USER')
+  }
 
-  const backgroundImage = require('../assets/bgImage.png');
+  const backgroundImage = require('../assets/bgImage.png')
 
   return (
     <ImageBackground source={backgroundImage} style={styles.container}>
@@ -45,15 +45,16 @@ export default function HomeScreen() {
             <Text style={styles.loginButtonText}>User Login</Text>
           </TouchableOpacity>
         </View>
-        {/* <WarningMessage isAdmin={false} /> */}
-        <TouchableOpacity
-          style={styles.adminLoginButtonWrapper}
-          onPress={handleAdmin}>
-          <Text style={styles.loginButtonText}>Admin</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.loginButtonWrapper}
+            onPress={handleAdmin}>
+            <Text style={styles.loginButtonText}>Admin Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ImageBackground>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -64,22 +65,21 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
-    padding: 20, // Added padding for better layout
+    padding: 10,
   },
   logo: {
     height: 140,
     width: 100,
-    marginVertical: 10,
+    marginVertical: 0,
   },
   bannerImage: {
     height: 300,
-    // width: '100%',
     resizeMode: 'contain',
   },
   logoImage: {
     marginTop: 10,
     height: 70,
-  resizeMode: 'contain',
+    resizeMode: 'contain',
   },
   subTitle1: {
     fontSize: 18,
@@ -118,4 +118,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: fonts.SemiBold,
   },
-});
+})
