@@ -1,11 +1,18 @@
-import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import React from 'react';
 
 const Category = () => {
   const items = [
-    {id: '1', name: 'Fastest Delivery'},
-    {id: '2', name: 'Rating 4.0+'},
-    {id: '3', name: 'Offers'},
+    {id: '1', name: 'Deals', image: require('../assets/food1.jpg')},
+    {id: '2', name: 'Resturants', image: require('../assets/food1.jpg')},
+    {id: '3', name: 'Bakery', image: require('../assets/food1.jpg')},
   ];
 
   return (
@@ -15,15 +22,14 @@ const Category = () => {
         showsHorizontalScrollIndicator={false}
         data={items}
         keyExtractor={item => item.id}
-        renderItem={({item}) => {
-          return (
-            <TouchableOpacity activeOpacity={0.8} style={styles.button}>
-              <View style={styles.categoryItem}>
-                <Text style={styles.text}>{item?.name}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
+        renderItem={({item}) => (
+          <TouchableOpacity activeOpacity={0.8} style={styles.button}>
+            <View style={styles.categoryItem}>
+              <Image source={item.image} style={styles.image} />
+              <Text style={styles.text}>{item.name}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       />
     </View>
   );
@@ -33,20 +39,25 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 5,
     padding: 10,
-    alignItems: 'center',
+    alignItems: 'left',
   },
   button: {
     marginRight: 20, // Space between items
   },
   categoryItem: {
     padding: 10,
-    backgroundColor: '#0b421a',
     borderRadius: 8,
+    alignItems: 'center', // Center the image and text
+  },
+  image: {
+    width: 40,
+    height: 40,
+    marginBottom: 5, // Space between image and text
   },
   text: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: '400',
+    color: '#000',
   },
 });
 

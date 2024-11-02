@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -21,32 +22,33 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState('your-email@example.com');
   const [langModalVisible, setLangModalVisible] = useState(false);
   const [selectedLang, setSelectedLang] = useState(0);
+  const userId = 1; // Replace with actual user ID as necessary
+  const IMAGE_API_URL = id =>
+    `http://10.0.2.2:8083/user/registrations_photo/${id}`;
 
-  const pickImage = () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 1,
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.2.2:8083/user/get/user_id/${userId}`,
+        );
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setName(data.name || 'Your Name');
+        setEmail(data.email || 'your-email@example.com');
+        setImageUri(data.image); // Assuming 'image' holds the URL
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
     };
 
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        Alert.alert('Cancelled', 'Image selection was cancelled');
-      } else if (response.errorMessage) {
-        Alert.alert('Error', response.errorMessage);
-      } else {
-        const selectedImageUri = response.assets[0].uri;
-        setImageUri(selectedImageUri);
-      }
-    });
-  };
+    fetchUserData();
+  }, [userId]);
 
-  const handleEditProfile = () => {
-    navigation.navigate('EditProfile');
-  };
-
-  const handleYourOrder = () => {
-    navigation.navigate('YourOrder');
-  };
+  const handleEditProfile = () => navigation.navigate('EditProfile');
+  const handleYourOrder = () => navigation.navigate('YourOrder');
 
   const logout = async () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -55,13 +57,8 @@ const ProfileScreen = () => {
         text: 'OK',
         onPress: async () => {
           try {
-            // Clear user data from AsyncStorage
             await AsyncStorage.clear();
-            // Navigate to LoginScreen after logout
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'WELCOME'}], // Adjust to your login screen name
-            });
+            navigation.reset({index: 0, routes: [{name: 'WELCOME'}]});
           } catch (error) {
             console.error('Error logging out:', error);
           }
@@ -79,62 +76,58 @@ const ProfileScreen = () => {
             style={styles.backButton}>
             <Icon name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={pickImage}>
+
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <Text style={styles.profileName}>Hey, {name} !</Text>
             <Image
-              source={{
-                uri:
-                  imageUri ||
-                  'https://pixabay.com/photos/india-men-portrait-indian-classic-5342927/',
-              }}
               style={styles.profileImage}
+              source={{uri: IMAGE_API_URL(userId)}}
             />
-          </TouchableOpacity>
-          <Text style={styles.profileName}>{name}</Text>
-          <Text style={styles.profileEmail}>{email}</Text>
+          </View>
         </View>
 
         <View style={styles.card}>
           <View style={styles.optionsContainer}>
-            <TouchableOpacity
-              style={styles.optionCard}
-              onPress={handleEditProfile}>
-              <View style={styles.option}>
-                <Icon name="edit" size={20} color="#d97b29" />
-                <Text style={styles.optionText}>Edit Profile</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionCard}
-              onPress={handleYourOrder}>
-              <View style={styles.option}>
-                <Icon name="shopping-cart" size={20} color="#d97b29" />
-                <Text style={styles.optionText}>Your Order</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.optionCard}
-              onPress={() => setLangModalVisible(!langModalVisible)}>
-              <View style={styles.option}>
-                <Icon name="language" size={20} color="#d97b29" />
-                <Text style={styles.optionText}>Choose Languages</Text>
-              </View>
-            </TouchableOpacity>
-
-            <Languages
-              langModalVisible={langModalVisible}
-              setLangModalVisible={setLangModalVisible}
-              setLangIndex={setSelectedLang}
-            />
-
-            <TouchableOpacity style={styles.optionCard}>
-              <View style={styles.option}>
-                <Icon name="info" size={20} color="#d97b29" />
-                <Text style={styles.optionText}>About</Text>
-              </View>
-            </TouchableOpacity>
+            {[
+  
+              {label: 'Personal Information', icon: 'person', action: handleEditProfile},
+              {label: 'Delivery Address', icon: 'person', action: handleEditProfile},
+              {
+                label: 'Languages',
+                icon: 'language',
+                action: () => setLangModalVisible(!langModalVisible),
+              },
+              
+              {label: 'Legal, data and privacy', icon: 'info', action: () => {}},
+              {
+                label: 'Delete Your Account',
+                icon: 'delete',
+                action: handleYourOrder,
+              },
+            ].map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.optionCard}
+                onPress={option.action}>
+                <View style={styles.option}>
+                  <Icon name={option.icon} size={20} color="#D97B29" />
+                  <Text style={styles.optionText}>{option.label}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
+
+          <Languages
+            langModalVisible={langModalVisible}
+            setLangModalVisible={setLangModalVisible}
+            setLangIndex={setSelectedLang}
+          />
 
           <TouchableOpacity onPress={logout} style={styles.logoutButton}>
             <Text style={styles.logoutButtonText}>Logout</Text>
@@ -148,82 +141,54 @@ const ProfileScreen = () => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fbfdfd',
-  },
+  container: {flex: 1, backgroundColor: '#F9FAFB'},
   profileHeader: {
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#d97b29',
+    padding: 25,
+    backgroundColor: 'green',
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
   },
-  backButton: {
-    position: 'absolute',
-    left: 15,
-    top: 15,
-    zIndex: 1,
-  },
+
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: '#fff',
+    width: 100, // Set desired width
+    height: 100, // Set desired height
+    borderRadius: 50, // Make it circular
+    marginBottom: 10, // Add spacing below the image
   },
   profileName: {
-    fontSize: 22,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5, // Add spacing below the name
     color: '#fff',
-    marginTop: 10,
   },
   profileEmail: {
-    fontSize: 16,
-    color: '#fff',
+    fontSize: 14,
+    color: '#666', // Lighter color for the email
   },
-  card: {
-    marginTop: 20,
-    marginHorizontal: 15,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    padding: 15,
-  },
-  optionsContainer: {
-    marginTop: 10,
-  },
+  backButton: {position: 'absolute', left: 15, top: 15},
+  imageContainer: {marginTop: 10, borderRadius: 55, overflow: 'hidden'},
+
+  optionsContainer: {paddingHorizontal: 15},
   optionCard: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    marginVertical: 20,
-    paddingHorizontal: 15,
+    elevation: 1,
+    marginVertical: 15,
+    paddingHorizontal: 20,
     paddingVertical: 10,
-  },
-  option: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  optionText: {
-    fontSize: 18,
-    marginLeft: 10,
-    color:'#AEB5BB',
-  },
+  option: {flexDirection: 'row', alignItems: 'center'},
+  optionText: {fontSize: 18, marginLeft: 15, color: '#4A5568'},
   logoutButton: {
-    backgroundColor: '#d97b29',
-    padding: 15,
+    backgroundColor: '#D97B29',
+    paddingVertical: 15,
+    marginHorizontal: 20,
+    marginTop: 40,
     alignItems: 'center',
-    marginTop: 50, // Adjust margin for better placement
-    borderRadius: 8,
+    borderRadius: 10,
   },
-  logoutButtonText: {
-    color: '#fff',
-    fontSize: 18,
-  },
+  logoutButtonText: {color: '#FFF', fontSize: 18, fontWeight: '600'},
 });

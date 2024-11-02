@@ -62,6 +62,11 @@ const AdminDashboard = () => {
           onPress={() => navigation.navigate('ADDITEMS')}>
           <Text style={styles.actionButtonText}>Add Items</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate('ALLUSERS')}>
+          <Text style={styles.actionButtonText}>All Users</Text>
+        </TouchableOpacity>
 
         {/* Main Home Button */}
         <TouchableOpacity

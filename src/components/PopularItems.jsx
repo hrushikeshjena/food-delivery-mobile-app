@@ -16,7 +16,7 @@ const IMAGE_API_URL = item_id =>
 
 const API_URL = 'http://10.0.2.2:8083/items/get/allitem';
 
-const BigCard = () => {
+const PopularItems = () => {
   const [recommended, setRecommended] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -166,4 +166,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BigCard;
+export default PopularItems;

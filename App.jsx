@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import WelcomeScreen from './src/screen/WelcomeScreen';
 import SignupScreen from './src/screen/SignUpScreen';
 import HomeScreenComponent from './src/screen/HomeScreen';
@@ -22,6 +23,9 @@ import LoginAdmin from './src/screen/LoginAdmin';
 import LoginUser from './src/screen/LoginUsers';
 import MenuItem from './src/components/MenuItem';
 import PayPalCheckout from './src/components/Paypal';
+import AllUsers from './src/screen/AllUsers';
+import Address from './src/components/Address';
+import AddNewAddress from './src/components/AddNewAddress';
 
 function HomeScreen() {
   const Tab = createBottomTabNavigator();
@@ -35,6 +39,16 @@ function HomeScreen() {
           title: 'Home',
           tabBarIcon: ({size, color}) => (
             <Icon name="home" size={size} color="#D97B29" />
+          ),
+        }}
+      />
+       <Tab.Screen
+        name="YourOrder"
+        component={CombinedYourOrder}
+        options={{
+          title: 'Orders',
+          tabBarIcon: ({size, color}) => (
+            <MaterialIcons name="assignment" size={size} color="#D97B29" />
           ),
         }}
       />
@@ -72,7 +86,8 @@ const App = () => {
         <Stack.Screen name="ADMIN" component={LoginAdmin} />
         <Stack.Screen name="USER" component={LoginUser} />
         {/* LoginAdmin  LoginUser */}
-        {/* <Stack.Screen name="SIGNUP" component={SignupScreen} /> */}
+        <Stack.Screen name="SIGNUP" component={SignupScreen} />
+        {/* <Stack.Screen name="LOGIN" component={SignupScreen} /> */}
         <Stack.Screen name="MAINHOME" component={HomeScreen} />
         <Stack.Screen name="ADMINDASHBOARD" component={AdminDashboard} />
         <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
@@ -83,8 +98,10 @@ const App = () => {
         <Stack.Screen name="ADDITEMS" component={AddItems} />
         <Stack.Screen name="ORDERSTATUS" component={OrderStatus} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
-        <Stack.Screen name="YourOrder" component={CombinedYourOrder} />
         <Stack.Screen name="PAYPAL" component={PayPalCheckout} />
+        <Stack.Screen name="ALLUSERS" component={AllUsers} />
+        <Stack.Screen name="ADDRESS" component={Address} />
+        <Stack.Screen name="ADDNEWADDRESS" component={AddNewAddress} />
       </Stack.Navigator>
     </NavigationContainer>
   );

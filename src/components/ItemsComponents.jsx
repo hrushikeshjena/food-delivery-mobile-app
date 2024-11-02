@@ -2,11 +2,13 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View, Image} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+const IMAGE_API_URL = item_id =>
+  `http://10.0.2.2:8083/items/add-item_photo/${item_id}`;
 
 const ItemsComponents = ({data}) => {
   return (
     <Pressable style={styles.container} onPress={() => console.log(data?.name)}>
-      <Image style={styles.image} source={{uri: data?.featured_image}} />
+      <Image style={styles.image}  source={{uri: IMAGE_API_URL(data.item_id)}} />
 
       <View style={styles.contentContainer}>
         <View style={styles.textContainer}>

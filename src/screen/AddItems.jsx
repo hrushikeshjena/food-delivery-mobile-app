@@ -20,7 +20,7 @@ const API_URL = 'http://10.0.2.2:8083';
 const AddItems = () => {
   const navigation = useNavigation();
   const [imageData, setImageData] = useState(null);
-  const [name, setName] = useState('');
+  const [itemname, setItemname] = useState('');
   const [price, setPrice] = useState('');
   const [discountPrice, setDiscountPrice] = useState('');
   const [description, setDescription] = useState('');
@@ -49,13 +49,13 @@ const AddItems = () => {
   };
 
   const handleCreate = async () => {
-    if (!name || !price || !description || !category || !imageData) {
+    if (!itemname || !price || !description || !category || !imageData) {
       Alert.alert('Please fill all fields');
       return;
     }
 
     const formData = new FormData();
-    formData.append('name', name);
+    formData.append('itemname', itemname);
     formData.append('price', price);
     formData.append('discountPrice', discountPrice);
     formData.append('description', description);
@@ -88,7 +88,7 @@ const AddItems = () => {
   };
 
   const resetForm = () => {
-    setName('');
+    setItemname('');
     setPrice('');
     setDiscountPrice('');
     setDescription('');
@@ -115,8 +115,8 @@ const AddItems = () => {
       )}
       <TextInput
         placeholder="Enter item name"
-        value={name}
-        onChangeText={setName}
+        value={itemname}
+        onChangeText={setItemname}
         style={styles.inputStyle}
       />
       <TextInput
